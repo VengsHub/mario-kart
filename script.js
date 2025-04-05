@@ -24,15 +24,23 @@ document.addEventListener('DOMContentLoaded', () => {
   let scoreHistory = []; // To store { cellElement, score, playerIndex, roundIndex, raceIndex, columnIndex }
   let nextCellToFill = null; // Holds the reference to the next TD element
 
-  // --- ROUND CONFIGURATION ---
-  // IMPORTANT: This is a *sample* configuration. You need to replace this
-  // with your specific 15-round setup that ensures balanced pairings.
-  // Each inner array represents a round, listing the *indices* (0-5) of players participating.
+// Reordered BIBD (v=6, k=4, λ=6) attempting to improve breaks
   const roundConfigurations = [
-    [0, 1, 2, 3], [4, 5, 0, 1], [2, 3, 4, 5], [0, 1, 4, 2], [3, 5, 0, 4],
-    [1, 2, 5, 3], [0, 3, 1, 5], [2, 4, 0, 3], [1, 5, 2, 4], [0, 4, 1, 3],
-    [2, 5, 0, 4], [1, 3, 2, 5], [0, 4, 3, 2], [1, 5, 0, 2], [3, 4, 1, 5]
-    // Ensure this has exactly 15 rounds and follows your balancing rules.
+    [0, 1, 2, 3], // Round 1 (Sit: 4, 5)
+    [0, 1, 4, 5], // Round 2 (Sit: 2, 3) - Players 0,1 play again; 4,5 start.
+    [0, 2, 3, 4], // Round 3 (Sit: 1, 5) - Players 2,3 start; 0,4 play again.
+    [1, 2, 3, 5], // Round 4 (Sit: 0, 4) - Players 1,5 start; 2,3 play again.
+    [0, 1, 2, 4], // Round 5 (Sit: 3, 5) - Players 0,4 sit; 1,2 play again.
+    [0, 1, 3, 5], // Round 6 (Sit: 2, 4) - Players 3,5 sit; 0,1 play again.
+    [1, 2, 4, 5], // Round 7 (Sit: 0, 3) - Players 2,4 sit; 1,5 play again.
+    [0, 2, 3, 5], // Round 8 (Sit: 1, 4) - Players 0,3 sit; 2,5 play again.
+    [1, 3, 4, 5], // Round 9 (Sit: 0, 2) - Players 1,4 sit; 3,5 play again.
+    [0, 2, 4, 5], // Round 10 (Sit: 1, 3) - Players 0,2 sit; 4,5 play again.
+    [0, 1, 3, 4], // Round 11 (Sit: 2, 5) - Players 1,3 sit; 0,4 play again.
+    [0, 1, 2, 5], // Round 12 (Sit: 3, 4) - Players 2,5 sit; 0,1 play again.
+    [1, 2, 3, 4], // Round 13 (Sit: 0, 5) - Players 3,4 sit; 1,2 play again.
+    [0, 3, 4, 5], // Round 14 (Sit: 1, 2) - Players 0,5 sit; 3,4 play again.
+    [2, 3, 4, 5]  // Round 15 (Sit: 0, 1) - Players 1,2 sit; 3,4,5 play again.
   ];
 
   // --- DOM ELEMENTS ---
