@@ -343,6 +343,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('keydown', handleKeyPress);
   // --- End of Keyboard Shortcuts ---
 
+  function handleBeforeUnload(event) {
+    event.preventDefault(); // Standard practice
+    event.returnValue = ''; // For legacy browser support
+  }
+
+  // Add the listener to the window
+  window.addEventListener('beforeunload', handleBeforeUnload);
+
   // Start the application
   initialize();
 
