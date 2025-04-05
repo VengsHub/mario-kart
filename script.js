@@ -302,6 +302,47 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLeaderboard();
   }
 
+  // --- Add Keyboard Shortcuts ---
+  function handleKeyPress(event) {
+    const activeElement = document.activeElement;
+    const isInputFocused = activeElement && (activeElement.tagName === 'INPUT'); // Check if focus is on player name input
+
+    // Handle Backspace for Revert: Only trigger Revert if NOT focused on an input field
+    if (event.key === 'Backspace' && !isInputFocused) {
+      event.preventDefault(); // Important: Prevent browser back navigation
+      // Check if revert button is enabled before clicking
+      if (!revertButton.disabled) {
+        revertButton.click();
+      }
+      return; // Stop further processing for this key press
+    }
+
+    // For number and spacebar shortcuts, completely ignore if an input field has focus
+    if (isInputFocused) {
+      return;
+    }
+
+    // Handle numbers 1-9 for Score Buttons
+    if (event.key >= '1' && event.key <= '9') {
+      const place = parseInt(event.key, 10);
+      // Find the button with the matching data-place attribute
+      const scoreButton = document.querySelector(`#score-buttons button[data-place="${place}"]`);
+      if (scoreButton) {
+        event.preventDefault(); // Prevent typing the number if not in an input
+        scoreButton.click();
+      }
+    }
+    // Handle Spacebar for Star Button
+    else if (event.key === ' ' || event.code === 'Space') { // Check 'key' and 'code' for cross-browser compatibility
+      event.preventDefault(); // Prevent default spacebar action (like scrolling)
+      starButton.click();
+    }
+  }
+
+  // Add the listener to the whole window
+  window.addEventListener('keydown', handleKeyPress);
+  // --- End of Keyboard Shortcuts ---
+
   // Start the application
   initialize();
 

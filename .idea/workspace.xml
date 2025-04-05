@@ -91,11 +91,24 @@
       <option name="presentableId" value="Default" />
       <updated>1743811865894</updated>
       <workItem from="1743811866892" duration="619000" />
-      <workItem from="1743812706919" duration="273000" />
+      <workItem from="1743812706919" duration="1617000" />
     </task>
+    <task id="LOCAL-00001" summary="improve round structure">
+      <option name="closed" value="true" />
+      <created>1743813250531</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1743813250531</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="improve round structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve round structure" />
   </component>
 </project>
