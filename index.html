@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mario Kart Tournament Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <header id="player-names">
+    <h2>Player Names</h2>
+    <div class="player-inputs">
+      <label>A: <input type="text" id="player-name-0" class="player-name-input" placeholder="Player A"></label>
+      <label>B: <input type="text" id="player-name-1" class="player-name-input" placeholder="Player B"></label>
+      <label>C: <input type="text" id="player-name-2" class="player-name-input" placeholder="Player C"></label>
+      <label>D: <input type="text" id="player-name-3" class="player-name-input" placeholder="Player D"></label>
+      <label>E: <input type="text" id="player-name-4" class="player-name-input" placeholder="Player E"></label>
+      <label>F: <input type="text" id="player-name-5" class="player-name-input" placeholder="Player F"></label>
+    </div>
+  </header>
+
+  <main class="content-area">
+    <section id="rounds-container">
+      <h2>Rounds</h2>
+    </section>
+
+    <aside id="controls-leaderboard">
+      <section id="score-controls">
+        <h2>Enter Score (Place)</h2>
+        <div id="score-buttons">
+        </div>
+        <div class="action-buttons">
+          <button id="star-btn">⭐</button>
+          <button id="revert-btn">Revert Last</button>
+        </div>
+      </section>
+
+      <section id="leaderboard">
+        <h2>Leaderboard</h2>
+        <table>
+          <thead>
+          <tr>
+            <th>Player</th>
+            <th>Points</th>
+            <th>Races</th>
+            <th>Avg.</th>
+          </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+          </tbody>
+        </table>
+      </section>
+    </aside>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

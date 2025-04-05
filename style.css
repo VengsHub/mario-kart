@@ -1,0 +1,173 @@
+:root {
+    --table-border: #ccc;
+    --header-bg: #eee;
+    --button-bg: #f0f0f0;
+    --button-hover-bg: #ddd;
+    --star-active-bg: #ffd700; /* Gold */
+}
+
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f8f8;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h2,
+section h2 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--table-border);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+/* Player Names */
+#player-names .player-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#player-names label {
+    font-weight: bold;
+}
+
+#player-names input {
+    padding: 5px 8px;
+    border: 1px solid var(--table-border);
+    border-radius: 4px;
+    width: 120px; /* Adjust as needed */
+}
+
+/* Main Layout */
+.content-area {
+    display: flex;
+    gap: 30px;
+}
+
+#rounds-container {
+    flex: 3; /* Takes up more space */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#controls-leaderboard {
+    flex: 1; /* Takes up less space */
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Round Tables */
+.round-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed; /* Equal column widths */
+}
+
+.round-table th,
+.round-table td {
+    border: 1px solid var(--table-border);
+    padding: 8px;
+    text-align: center;
+    height: 35px; /* Consistent cell height */
+}
+
+.round-table th {
+    background-color: var(--header-bg);
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.round-table td.filled {
+    font-weight: bold;
+    background-color: #e9f5ff; /* Light blue for filled cells */
+}
+.round-table td.next-cell-highlight {
+    background-color: #fffacd; /* Lemon chiffon to highlight next cell */
+    outline: 2px solid #f0ad4e; /* Orange outline */
+}
+
+
+/* Score Controls */
+#score-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns for buttons */
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+#score-buttons button,
+.action-buttons button {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid var(--table-border);
+    border-radius: 4px;
+    background-color: var(--button-bg);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#score-buttons button:hover,
+.action-buttons button:hover {
+    background-color: var(--button-hover-bg);
+}
+
+#star-btn.active {
+    background-color: var(--star-active-bg);
+    border-color: darken(var(--star-active-bg), 10%);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#revert-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+#revert-btn:hover {
+    background-color: #d32f2f;
+}
+#revert-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+
+/* Leaderboard */
+#leaderboard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#leaderboard th,
+#leaderboard td {
+    border: 1px solid var(--table-border);
+    padding: 8px;
+    text-align: left;
+}
+
+#leaderboard th {
+    background-color: var(--header-bg);
+}
+
+#leaderboard td:nth-child(n+2) { /* Points, Races, Avg columns */
+    text-align: right;
+}
