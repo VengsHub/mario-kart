@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const PLAYERS_PER_ROUND = 4;
 
   // Points Mapping: Place -> Points (1st = 15, 2nd = 12, ..., 12th = 1)
-  // Only 4 players race, so only 1st-4th matter for direct input,
-  // but keep full map in case rules change or for flexibility.
   const POINTS_MAP = {
     1: 15, 2: 12, 3: 10, 4: 9, 5: 8, 6: 7,
     7: 6, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1
@@ -50,6 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const starButton = document.getElementById('star-btn');
   const revertButton = document.getElementById('revert-btn');
   const leaderboardBody = document.getElementById('leaderboard-body');
+
+  const resultsOverlay = document.getElementById('results-overlay'); // Added
+  const resultsContent = document.querySelector('.results-content'); // Added
+  const winnerName1st = document.getElementById('winner-name-1st');   // Added
+  const winnerScore1st = document.getElementById('winner-score-1st'); // Added
+  const winnerName2nd = document.getElementById('winner-name-2nd');   // Added
+  const winnerScore2nd = document.getElementById('winner-score-2nd'); // Added
+  const winnerName3rd = document.getElementById('winner-name-3rd');   // Added
+  const winnerScore3rd = document.getElementById('winner-score-3rd'); // Added
+  const closeResultsButton = document.getElementById('close-results-btn'); // Added
 
   // --- FUNCTIONS ---
 
@@ -121,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return null; // No empty cells left
   }
 
-  // Highlight the next cell
   function highlightNextCell() {
     // Remove existing highlights
     document.querySelectorAll('.next-cell-highlight').forEach(cell => {
@@ -131,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nextCellToFill) {
       nextCellToFill.classList.add('next-cell-highlight');
       // Scroll into view if needed (optional)
-      // nextCellToFill.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      nextCellToFill.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 
@@ -167,21 +174,60 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-// Handle score button click
+  function showResults() {
+    // Sort players by final score
+    const sortedPlayers = [...playerData].sort((a, b) => {
+      if (b.totalPoints !== a.totalPoints) {
+        return b.totalPoints - a.totalPoints;
+      }
+      const avgA = a.racesPlayed === 0 ? 0 : a.totalPoints / a.racesPlayed;
+      const avgB = b.racesPlayed === 0 ? 0 : b.totalPoints / b.racesPlayed;
+      return avgB - avgA;
+    });
+
+    // Get top 3 (handle cases with fewer than 3 players if necessary, though not needed for 6 players)
+    const winner1 = sortedPlayers[0] || { name: 'N/A', totalPoints: 0 };
+    const winner2 = sortedPlayers[1] || { name: 'N/A', totalPoints: 0 };
+    const winner3 = sortedPlayers[2] || { name: 'N/A', totalPoints: 0 };
+
+    // Populate podium
+    winnerName1st.textContent = winner1.name;
+    winnerScore1st.textContent = `${winner1.totalPoints} pts`;
+    winnerName2nd.textContent = winner2.name;
+    winnerScore2nd.textContent = `${winner2.totalPoints} pts`;
+    winnerName3rd.textContent = winner3.name;
+    winnerScore3rd.textContent = `${winner3.totalPoints} pts`;
+
+    // Show overlay with transition effect
+    resultsOverlay.style.display = 'flex'; // Make it take up space
+    setTimeout(() => { // Allow display change to render before adding class
+      resultsOverlay.classList.add('visible');
+    }, 10); // Small delay
+
+    // Optional: Disable score/revert buttons
+    document.querySelectorAll('#score-buttons button, #revert-btn, #star-btn').forEach(btn => btn.disabled = true);
+  }
+
+  // Add this new function to hide the results screen
+  function hideResults() {
+    resultsOverlay.classList.remove('visible');
+    // Wait for fade out transition before setting display none
+    setTimeout(() => {
+      resultsOverlay.style.display = 'none';
+      // Optional: Re-enable buttons if you want game to continue or reset
+      // document.querySelectorAll('#score-buttons button, #revert-btn, #star-btn').forEach(btn => btn.disabled = false);
+    }, 500); // Match transition duration in CSS
+  }
+
+  // Handle score button click
   function handleScoreButtonClick(event) {
     const place = parseInt(event.target.getAttribute('data-place'), 10);
     if (isNaN(place) || !POINTS_MAP[place]) return; // Invalid button
 
-    // Check if there's a cell ready to be filled
     if (!nextCellToFill) {
       alert("All race cells are filled!");
       return;
     }
-
-    // --- START Scroll Logic ---
-    // Keep a reference to the cell *before* potentially finding the next one
-    const filledCell = nextCellToFill;
-    // --- END Scroll Logic ---
 
     let score = POINTS_MAP[place];
     if (isStarActive) {
@@ -189,20 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Get player index from the cell's data attribute
-    const playerIndex = parseInt(filledCell.getAttribute('data-player-index'), 10);
-    const roundIndex = parseInt(filledCell.getAttribute('data-round-index'), 10);
-    const raceIndex = parseInt(filledCell.getAttribute('data-race-index'), 10);
-    const columnIndex = parseInt(filledCell.getAttribute('data-column-index'), 10);
+    const playerIndex = parseInt(nextCellToFill.getAttribute('data-player-index'), 10);
+    const roundIndex = parseInt(nextCellToFill.getAttribute('data-round-index'), 10);
+    const raceIndex = parseInt(nextCellToFill.getAttribute('data-race-index'), 10);
+    const columnIndex = parseInt(nextCellToFill.getAttribute('data-column-index'), 10);
+
 
     // Update cell
-    filledCell.textContent = score;
-    filledCell.classList.add('filled'); // Mark as filled
-    filledCell.classList.remove('next-cell-highlight'); // Remove highlight from filled cell
-
-    // --- START Scroll Logic ---
-    // Scroll this cell into view if needed, aligning to bottom ('nearest' does this when below)
-    filledCell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    // --- END Scroll Logic ---
+    nextCellToFill.textContent = score;
+    nextCellToFill.classList.add('filled'); // Mark as filled
 
     // Update player data
     playerData[playerIndex].totalPoints += score;
@@ -210,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Record history
     scoreHistory.push({
-      cellElement: filledCell, // Use the saved reference
+      cellElement: nextCellToFill,
       score: score,
       playerIndex: playerIndex,
       roundIndex: roundIndex,
@@ -225,12 +266,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Find the *new* next cell
-    nextCellToFill = findNextEmptyCell(); // This finds the next *empty* cell
-    highlightNextCell(); // Highlight the new next cell
+    nextCellToFill = findNextEmptyCell();
+    highlightNextCell();
 
     // Update UI
     renderLeaderboard();
     revertButton.disabled = false; // Enable revert button
+
+    // --- Check if game finished ---
+    if (nextCellToFill === null) {
+      // Use setTimeout for a slight delay - feels more climactic
+      setTimeout(showResults, 300); // Show results after 300ms
+    }
   }
 
   // Handle Star Button click
@@ -307,9 +354,31 @@ document.addEventListener('DOMContentLoaded', () => {
     nextCellToFill = findNextEmptyCell();
     highlightNextCell();
 
-
     // 6. Initial Leaderboard Render
     renderLeaderboard();
+
+    // Add the listener to the whole window
+    window.addEventListener('keydown', handleKeyPress);
+    // --- End of Keyboard Shortcuts ---
+
+    function handleBeforeUnload(event) {
+      event.preventDefault(); // Standard practice
+      event.returnValue = ''; // For legacy browser support
+    }
+
+    // Add the listener to the window
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Add listener for the close button on the results screen
+    closeResultsButton.addEventListener('click', hideResults);
+
+    // Optional: Add listener to close overlay by clicking background
+    resultsOverlay.addEventListener('click', (event) => {
+      // Check if the click was directly on the overlay background
+      if (event.target === resultsOverlay) {
+        hideResults();
+      }
+    });
   }
 
   // --- Add Keyboard Shortcuts ---
@@ -348,18 +417,6 @@ document.addEventListener('DOMContentLoaded', () => {
       starButton.click();
     }
   }
-
-  // Add the listener to the whole window
-  window.addEventListener('keydown', handleKeyPress);
-  // --- End of Keyboard Shortcuts ---
-
-  function handleBeforeUnload(event) {
-    event.preventDefault(); // Standard practice
-    event.returnValue = ''; // For legacy browser support
-  }
-
-  // Add the listener to the window
-  window.addEventListener('beforeunload', handleBeforeUnload);
 
   // Start the application
   initialize();

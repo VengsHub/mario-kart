@@ -16,12 +16,18 @@
       <header id="player-names">
         <h2>Player Names</h2>
         <div class="player-inputs">
-          <label>A: <input type="text" id="player-name-0" class="player-name-input" placeholder="Player A" maxlength="8"></label>
-          <label>B: <input type="text" id="player-name-1" class="player-name-input" placeholder="Player B" maxlength="8"></label>
-          <label>C: <input type="text" id="player-name-2" class="player-name-input" placeholder="Player C" maxlength="8"></label>
-          <label>D: <input type="text" id="player-name-3" class="player-name-input" placeholder="Player D" maxlength="8"></label>
-          <label>E: <input type="text" id="player-name-4" class="player-name-input" placeholder="Player E" maxlength="8"></label>
-          <label>F: <input type="text" id="player-name-5" class="player-name-input" placeholder="Player F" maxlength="8"></label>
+          <label>A: <input type="text" id="player-name-0" class="player-name-input" placeholder="Player A"
+                           maxlength="8"></label>
+          <label>B: <input type="text" id="player-name-1" class="player-name-input" placeholder="Player B"
+                           maxlength="8"></label>
+          <label>C: <input type="text" id="player-name-2" class="player-name-input" placeholder="Player C"
+                           maxlength="8"></label>
+          <label>D: <input type="text" id="player-name-3" class="player-name-input" placeholder="Player D"
+                           maxlength="8"></label>
+          <label>E: <input type="text" id="player-name-4" class="player-name-input" placeholder="Player E"
+                           maxlength="8"></label>
+          <label>F: <input type="text" id="player-name-5" class="player-name-input" placeholder="Player F"
+                           maxlength="8"></label>
         </div>
       </header>
 
@@ -64,6 +70,31 @@
   </main>
 </div>
 
+<div id="results-overlay">
+  <div class="results-content">
+    <h2>Tournament Finished!</h2>
+
+    <div class="podium-container">
+      <div class="podium-place podium-2nd">
+        <div class="rank">2nd</div>
+        <div class="winner-name" id="winner-name-2nd">Player B</div>
+        <div class="winner-score" id="winner-score-2nd">0 pts</div>
+      </div>
+      <div class="podium-place podium-1st">
+        <div class="rank">1st 🏆</div>
+        <div class="winner-name" id="winner-name-1st">Player A</div>
+        <div class="winner-score" id="winner-score-1st">0 pts</div>
+      </div>
+      <div class="podium-place podium-3rd">
+        <div class="rank">3rd</div>
+        <div class="winner-name" id="winner-name-3rd">Player C</div>
+        <div class="winner-score" id="winner-score-3rd">0 pts</div>
+      </div>
+    </div>
+
+    <button id="close-results-btn">Close</button>
+  </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

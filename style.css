@@ -349,3 +349,145 @@ section h2 {
     scrollbar-width: thin;
     scrollbar-color: var(--mk-blue) var(--mk-light-grey);
 }
+
+/* Finish Screen Overlay Styles */
+#results-overlay {
+    position: fixed; /* Cover the whole screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top */
+    opacity: 0; /* Start transparent for fade-in */
+    transition: opacity 0.5s ease-in-out; /* Fade effect */
+}
+
+#results-overlay.visible {
+    display: flex; /* Use flex to center content */
+    opacity: 1; /* Make visible */
+}
+
+.results-content {
+    background: linear-gradient(180deg, var(--mk-light-bg) 0%, var(--mk-white) 100%);
+    padding: 30px 40px;
+    border-radius: 20px;
+    border: 5px solid var(--mk-yellow);
+    text-align: center;
+    box-shadow: 0 0 30px rgba(251, 208, 0, 0.7); /* Yellow glow */
+    transform: scale(0.8); /* Start small for pop-in */
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Pop effect */
+}
+
+#results-overlay.visible .results-content {
+    transform: scale(1); /* Scale to full size */
+}
+
+
+.results-content h2 {
+    font-family: var(--font-mario);
+    color: var(--mk-red);
+    font-size: 2.5em;
+    margin-bottom: 25px;
+    text-shadow: 3px 3px 0px var(--mk-white), 5px 5px 0px rgba(0, 0, 0, 0.1);
+    border-bottom: none; /* Remove default border if inherited */
+}
+
+.podium-container {
+    display: flex;
+    align-items: flex-end; /* Align bases of podiums */
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 35px;
+    gap: 5px; /* Small gap between podium blocks */
+    min-height: 200px; /* Ensure container has height */
+}
+
+.podium-place {
+    width: 140px; /* Width of each podium block */
+    padding: 15px 10px;
+    border: 4px solid var(--mk-dark-blue);
+    border-bottom: none; /* No border at the very bottom */
+    border-radius: 10px 10px 0 0; /* Rounded top corners */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out content */
+    align-items: center;
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.1), 3px 3px 5px rgba(0,0,0,0.2);
+}
+
+.podium-place .rank {
+    font-family: var(--font-mario);
+    font-size: 1.6em;
+    line-height: 26px;
+}
+
+.podium-place .winner-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    word-wrap: break-word; /* Wrap long names if needed */
+}
+
+.podium-place .winner-score {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+/* Individual Podium Styles */
+.podium-1st {
+    height: 180px; /* Tallest */
+    background-color: var(--mk-yellow);
+    color: var(--mk-black);
+    border-color: #b38f00; /* Dark Gold */
+    order: 2; /* Center */
+    z-index: 10; /* Ensure it overlaps slightly if needed */
+    position: relative; /* For z-index */
+}
+.podium-1st .rank {
+    color: var(--mk-red); /* Red rank text */
+}
+
+.podium-2nd {
+    height: 140px; /* Medium */
+    background-color: #d0d0d0; /* Silver */
+    color: var(--mk-black);
+    border-color: #a0a0a0; /* Grey */
+    order: 1; /* Left */
+}
+
+.podium-3rd {
+    height: 110px; /* Shortest */
+    background-color: #cd7f32; /* Bronze */
+    color: var(--mk-white);
+    border-color: #8b4513; /* Dark Brown */
+    order: 3; /* Right */
+}
+
+/* Close button styling */
+#close-results-btn {
+    font-family: var(--font-mario);
+    font-size: 1.2em;
+    padding: 10px 25px;
+    margin-top: 15px;
+    cursor: pointer;
+    background-color: var(--mk-red);
+    color: var(--mk-white);
+    border: 3px solid #a00;
+    border-radius: 8px;
+    box-shadow: 0px 3px 0px #a00;
+    transition: transform 0.1s ease, background-color 0.2s, box-shadow 0.1s ease;
+}
+
+#close-results-btn:hover {
+    background-color: #ff4d4a;
+    transform: scale(1.05);
+}
+
+#close-results-btn:active {
+    transform: scale(0.98) translateY(1px);
+    box-shadow: 0px 2px 0px #a00;
+}
