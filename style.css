@@ -1,173 +1,298 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
 :root {
-    --table-border: #ccc;
-    --header-bg: #eee;
-    --button-bg: #f0f0f0;
-    --button-hover-bg: #ddd;
-    --star-active-bg: #ffd700; /* Gold */
+    /* Mario Kart Color Palette */
+    --mk-red: #E52521;     /* Mario Red */
+    --mk-blue: #009BDA;    /* Mario Blue */
+    --mk-yellow: #FBD000;  /* Coin/Star Yellow */
+    --mk-green: #43B047;   /* Luigi/Pipe Green */
+    --mk-dark-blue: #00387b; /* Deeper Blue for borders/accents */
+    --mk-white: #FFFFFF;
+    --mk-black: #000000;
+    --mk-light-bg: #a0e8ff; /* Light Sky Blue Background */
+    --mk-dark-grey: #4a4a4a;
+    --mk-light-grey: #f0f0f0;
+
+    /* Fonts */
+    --font-mario: 'Luckiest Guy', cursive;
+    --font-body: 'Arial', sans-serif; /* Use a clean sans-serif for scores/data */
 }
 
 body {
-    font-family: sans-serif;
+    font-family: var(--font-body);
     line-height: 1.6;
     margin: 0;
     padding: 20px;
-    background-color: #f8f8f8;
+    background-color: var(--mk-light-bg);
+    /* Optional: Add a subtle cloud pattern or checkered flag */
+    /* background-image: url('path/to/your/cloud-pattern.png'); */
 }
 
 .container {
     max-width: 1600px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    background-color: var(--mk-white);
+    padding: 25px;
+    border-radius: 15px;
+    border: 4px solid var(--mk-dark-blue);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Section Headers (like Player Names, Rounds, Controls, Leaderboard) */
 header h2,
 section h2 {
+    font-family: var(--font-mario);
+    color: var(--mk-red);
+    text-shadow: 2px 2px 0px var(--mk-white), 4px 4px 0px rgba(0, 0, 0, 0.1);
+    border-bottom: 4px dashed var(--mk-dark-blue);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
     margin-top: 0;
-    border-bottom: 1px solid var(--table-border);
-    padding-bottom: 5px;
-    margin-bottom: 15px;
+    letter-spacing: 1px;
+    text-align: center;
+    font-size: 1.8em;
 }
 
-/* Player Names */
+/* Player Names Section */
 #player-names .player-inputs {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 15px 25px; /* More horizontal gap */
+    margin-bottom: 25px;
+    justify-content: center;
 }
 
 #player-names label {
     font-weight: bold;
+    font-size: 1.1em;
+    color: var(--mk-dark-blue);
 }
 
 #player-names input {
-    padding: 5px 8px;
-    border: 1px solid var(--table-border);
-    border-radius: 4px;
-    width: 120px; /* Adjust as needed */
+    padding: 8px 12px;
+    border: 3px solid var(--mk-blue);
+    border-radius: 8px;
+    width: 140px;
+    font-weight: bold;
+    font-size: 1em;
+    background-color: #f0f8ff; /* Alice blue */
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1);
 }
 
 /* Main Layout */
 .content-area {
     display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
     gap: 30px;
 }
 
 #rounds-container {
-    flex: 3; /* Takes up more space */
+    flex: 3;
+    min-width: 500px; /* Ensure it has some base width */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px; /* Space between round tables */
 }
 
 #controls-leaderboard {
-    flex: 1; /* Takes up less space */
+    flex: 1;
+    min-width: 280px; /* Ensure controls don't get too squished */
     display: flex;
     flex-direction: column;
     gap: 30px;
+    background-color: #e6f7ff; /* Very light blue panel background */
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--mk-blue);
 }
 
-/* Round Tables */
-.round-table {
-    border-collapse: collapse;
+/* Round Title (Round 1, Round 2...) */
+.round h3 {
+    font-family: var(--font-mario);
+    color: var(--mk-blue);
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    text-shadow: 1px 1px 0px var(--mk-white), 2px 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Tables (Rounds and Leaderboard) */
+.round-table,
+#leaderboard table {
+    border-collapse: separate; /* Use separate for rounded corners */
+    border-spacing: 0;
     width: 100%;
-    table-layout: fixed; /* Equal column widths */
+    table-layout: fixed;
+    border: 3px solid var(--mk-dark-blue);
+    border-radius: 10px;
+    overflow: hidden; /* Important for border-radius */
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.15);
 }
 
+/* Table Headers (Player Names in Rounds, Leaderboard Headers) */
 .round-table th,
-.round-table td {
-    border: 1px solid var(--table-border);
+#leaderboard th {
+    background-color: var(--mk-blue);
+    color: var(--mk-white);
+    font-family: var(--font-mario);
+    padding: 10px 8px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    font-size: 1.1em;
+    border-bottom: 3px solid var(--mk-dark-blue);
+    /* Prevent text wrapping if desired, but might hide names */
+    /* white-space: nowrap; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+}
+#leaderboard th {
+    background-color: var(--mk-green); /* Different color for leaderboard */
+    border-bottom-color: #006400; /* Dark Green */
+}
+
+
+/* Table Cells (Scores, Leaderboard Data) */
+.round-table td,
+#leaderboard td {
+    border: 1px solid #b0c4de; /* Light Steel Blue borders */
     padding: 8px;
     text-align: center;
-    height: 35px; /* Consistent cell height */
+    height: 38px;
+    font-weight: bold;
+    font-size: 1.1em;
+    background-color: var(--mk-white);
 }
 
-.round-table th {
-    background-color: var(--header-bg);
-    font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+#leaderboard td {
+    text-align: right; /* Align numbers right */
 }
+#leaderboard td:first-child {
+    text-align: left; /* Align player names left */
+    font-weight: bold;
+    color: var(--mk-dark-blue);
+}
+
 
 .round-table td.filled {
-    font-weight: bold;
-    background-color: #e9f5ff; /* Light blue for filled cells */
+    background-color: #fffacd; /* Lemon Chiffon - like a coin block */
+    color: var(--mk-black);
 }
 .round-table td.next-cell-highlight {
-    background-color: #fffacd; /* Lemon chiffon to highlight next cell */
-    outline: 2px solid #f0ad4e; /* Orange outline */
+    background-color: var(--mk-yellow); /* Bright yellow highlight */
+    outline: 3px solid var(--mk-red);
+    outline-offset: -2px; /* Inset outline slightly */
+    box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.5); /* Inner red glow */
 }
 
 
 /* Score Controls */
 #score-buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns for buttons */
-    gap: 5px;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px; /* Increased gap */
+    margin-bottom: 15px;
 }
 
-#score-buttons button,
-.action-buttons button {
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid var(--table-border);
-    border-radius: 4px;
-    background-color: var(--button-bg);
+/* General Button Style (Score Buttons) */
+#score-buttons button {
+    padding: 10px 5px; /* Adjust padding */
+    font-size: 1.3em; /* Larger numbers */
+    font-family: var(--font-mario);
+    border: 3px solid var(--mk-dark-blue);
+    border-radius: 8px;
+    background-color: var(--mk-yellow); /* Yellow like item boxes */
+    color: var(--mk-black);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: transform 0.1s ease, background-color 0.2s, box-shadow 0.1s ease;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    box-shadow: 0px 4px 0px var(--mk-dark-blue); /* 3D effect */
+    position: relative; /* Needed for positioning adjustments on click */
 }
 
-#score-buttons button:hover,
-.action-buttons button:hover {
-    background-color: var(--button-hover-bg);
+#score-buttons button:hover {
+    background-color: #fff060; /* Lighter yellow on hover */
+    transform: scale(1.03); /* Slight grow */
 }
 
-#star-btn.active {
-    background-color: var(--star-active-bg);
-    border-color: darken(var(--star-active-bg), 10%);
+#score-buttons button:active {
+    transform: scale(0.98) translateY(2px); /* Push down effect */
+    box-shadow: 0px 2px 0px var(--mk-dark-blue); /* Reduce shadow */
 }
 
+
+/* Action Buttons (Star, Revert) */
 .action-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 15px;
+    margin-top: 15px;
 }
 
+.action-buttons button {
+    flex-grow: 1; /* Make buttons fill space */
+    padding: 12px;
+    font-size: 1.2em;
+    font-family: var(--font-mario);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s ease, background-color 0.2s, box-shadow 0.1s ease;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    box-shadow: 0px 4px 0px var(--mk-dark-grey); /* 3D effect */
+    position: relative;
+    border: 3px solid var(--mk-dark-grey);
+}
+.action-buttons button:hover {
+    transform: scale(1.03);
+}
+.action-buttons button:active {
+    transform: scale(0.98) translateY(2px); /* Push down effect */
+    box-shadow: 0px 2px 0px var(--mk-dark-grey); /* Reduce shadow */
+}
+
+/* Star Button Specific */
+#star-btn {
+    background-color: var(--mk-blue);
+    color: var(--mk-white);
+    border-color: var(--mk-dark-blue);
+    box-shadow: 0px 4px 0px var(--mk-dark-blue);
+}
+#star-btn:hover {
+    background-color: #33aeff;
+}
+#star-btn.active {
+    background-color: var(--mk-yellow); /* Yellow when active */
+    color: var(--mk-black);
+    border-color: #b38f00; /* Darker yellow */
+    box-shadow: 0px 4px 0px #b38f00;
+    font-size: 1.4em; /* Make star bigger when active */
+    transform: scale(1.05) translateY(-1px); /* Pop slightly */
+}
+#star-btn.active:active {
+    transform: scale(1.0) translateY(2px); /* Adjust active push */
+    box-shadow: 0px 2px 0px #b38f00;
+}
+
+
+/* Revert Button Specific */
 #revert-btn {
-    background-color: #f44336; /* Red */
-    color: white;
+    background-color: var(--mk-red);
+    color: var(--mk-white);
+    border-color: #a00; /* Darker Red */
+    box-shadow: 0px 4px 0px #a00;
 }
 #revert-btn:hover {
-    background-color: #d32f2f;
+    background-color: #ff4d4a;
 }
 #revert-btn:disabled {
-    background-color: #ccc;
+    background-color: #cccccc;
+    color: #888888;
     cursor: not-allowed;
+    border-color: #999999;
+    box-shadow: 0px 4px 0px #999999;
+    text-shadow: none;
+    transform: none; /* Disable hover/active effects */
 }
-
-
-/* Leaderboard */
-#leaderboard table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-#leaderboard th,
-#leaderboard td {
-    border: 1px solid var(--table-border);
-    padding: 8px;
-    text-align: left;
-}
-
-#leaderboard th {
-    background-color: var(--header-bg);
-}
-
-#leaderboard td:nth-child(n+2) { /* Points, Races, Avg columns */
-    text-align: right;
+#revert-btn:disabled:active {
+    transform: none; /* Disable push effect when disabled */
+    box-shadow: 0px 4px 0px #999999;
 }
