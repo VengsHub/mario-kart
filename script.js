@@ -167,15 +167,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Handle score button click
+// Handle score button click
   function handleScoreButtonClick(event) {
     const place = parseInt(event.target.getAttribute('data-place'), 10);
     if (isNaN(place) || !POINTS_MAP[place]) return; // Invalid button
 
+    // Check if there's a cell ready to be filled
     if (!nextCellToFill) {
       alert("All race cells are filled!");
       return;
     }
+
+    // --- START Scroll Logic ---
+    // Keep a reference to the cell *before* potentially finding the next one
+    const filledCell = nextCellToFill;
+    // --- END Scroll Logic ---
 
     let score = POINTS_MAP[place];
     if (isStarActive) {
@@ -183,15 +189,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Get player index from the cell's data attribute
-    const playerIndex = parseInt(nextCellToFill.getAttribute('data-player-index'), 10);
-    const roundIndex = parseInt(nextCellToFill.getAttribute('data-round-index'), 10);
-    const raceIndex = parseInt(nextCellToFill.getAttribute('data-race-index'), 10);
-    const columnIndex = parseInt(nextCellToFill.getAttribute('data-column-index'), 10);
-
+    const playerIndex = parseInt(filledCell.getAttribute('data-player-index'), 10);
+    const roundIndex = parseInt(filledCell.getAttribute('data-round-index'), 10);
+    const raceIndex = parseInt(filledCell.getAttribute('data-race-index'), 10);
+    const columnIndex = parseInt(filledCell.getAttribute('data-column-index'), 10);
 
     // Update cell
-    nextCellToFill.textContent = score;
-    nextCellToFill.classList.add('filled'); // Mark as filled
+    filledCell.textContent = score;
+    filledCell.classList.add('filled'); // Mark as filled
+    filledCell.classList.remove('next-cell-highlight'); // Remove highlight from filled cell
+
+    // --- START Scroll Logic ---
+    // Scroll this cell into view if needed, aligning to bottom ('nearest' does this when below)
+    filledCell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // --- END Scroll Logic ---
 
     // Update player data
     playerData[playerIndex].totalPoints += score;
@@ -199,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Record history
     scoreHistory.push({
-      cellElement: nextCellToFill,
+      cellElement: filledCell, // Use the saved reference
       score: score,
       playerIndex: playerIndex,
       roundIndex: roundIndex,
@@ -214,9 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Find the *new* next cell
-    nextCellToFill = findNextEmptyCell();
-    highlightNextCell();
-
+    nextCellToFill = findNextEmptyCell(); // This finds the next *empty* cell
+    highlightNextCell(); // Highlight the new next cell
 
     // Update UI
     renderLeaderboard();
@@ -277,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Create Score Buttons
     for (let place = 1; place <= 12; place++) {
       const button = document.createElement('button');
-      button.textContent = place;
+      button.textContent = place + '.';
       button.setAttribute('data-place', place);
       button.addEventListener('click', handleScoreButtonClick);
       scoreButtonsContainer.appendChild(button);

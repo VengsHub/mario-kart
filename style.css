@@ -193,6 +193,23 @@ section h2 {
     box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.4);
 }
 
+.points-legend {
+    font-size: 0.8em; /* Make it small */
+    color: var(--mk-dark-grey);
+    background-color: #ddeeff; /* Light blue background */
+    padding: 6px 10px;
+    border-radius: 5px;
+    margin-bottom: 12px; /* Space before score buttons */
+    text-align: center;
+    line-height: 1.4;
+    border: 1px solid var(--mk-blue);
+}
+
+.points-legend strong {
+    color: var(--mk-dark-blue);
+    font-weight: bold; /* Ensure it's bold */
+}
+
 #score-controls {
     margin-bottom: 25px; /* Added margin for spacing */
 }
