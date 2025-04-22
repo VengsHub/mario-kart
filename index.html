@@ -3,38 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mario Kart Tournament Tracker</title>
+  <title>Mario Kart Tournament Tracker (Vue)</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
+
+<div id="app" class="container">
   <main class="content-area">
     <section id="left-column">
       <header id="player-names">
         <h2>Player Names</h2>
         <div class="player-inputs">
-          <label>A: <input type="text" id="player-name-0" class="player-name-input" placeholder="Player A"
-                           maxlength="8"></label>
-          <label>B: <input type="text" id="player-name-1" class="player-name-input" placeholder="Player B"
-                           maxlength="8"></label>
-          <label>C: <input type="text" id="player-name-2" class="player-name-input" placeholder="Player C"
-                           maxlength="8"></label>
-          <label>D: <input type="text" id="player-name-3" class="player-name-input" placeholder="Player D"
-                           maxlength="8"></label>
-          <label>E: <input type="text" id="player-name-4" class="player-name-input" placeholder="Player E"
-                           maxlength="8"></label>
-          <label>F: <input type="text" id="player-name-5" class="player-name-input" placeholder="Player F"
-                           maxlength="8"></label>
+          <label v-for="(player, index) in playerData" :key="player.id">
+            {{ String.fromCharCode(65 + index) }}:
+            <input type="text"
+                   :id="'player-name-' + index"
+                   class="player-name-input"
+                   :placeholder="'Player ' + String.fromCharCode(65 + index)"
+                   maxlength="8"
+                   v-model="player.name"
+                   @blur="setDefaultNameIfEmpty(index)">
+          </label>
         </div>
       </header>
 
       <section id="rounds-container">
         <h2>Rounds</h2>
+        <div v-for="(playerIndices, roundIndex) in roundConfigurations" :key="'round-' + roundIndex" class="round">
+          <h3>Round {{ roundIndex + 1 }}</h3>
+          <table class="round-table" :data-round-index="roundIndex">
+            <thead>
+            <tr>
+              <th v-for="(playerIndex, columnIndex) in playerIndices"
+                  :key="'header-' + roundIndex + '-' + playerIndex"
+                  :data-player-index="playerIndex"
+                  :data-column-index="columnIndex"
+                  :title="playerData[playerIndex]?.name || ''">
+                {{ playerData[playerIndex]?.name || '' }}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(_, raceIndex) in RACES_PER_ROUND" :key="'race-' + roundIndex + '-' + raceIndex">
+              <td v-for="(playerIndex, columnIndex) in playerIndices"
+                  :key="'cell-' + roundIndex + '-' + raceIndex + '-' + playerIndex"
+                  class="score-cell"
+                  :class="{
+                            'next-cell-highlight': isNextCell(roundIndex, raceIndex, columnIndex),
+                            'filled': getCellScore(roundIndex, raceIndex, columnIndex) !== null
+                        }"
+                  :data-round-index="roundIndex"
+                  :data-race-index="raceIndex"
+                  :data-column-index="columnIndex"
+                  :data-player-index="playerIndex">
+                {{ getCellScore(roundIndex, raceIndex, columnIndex) }}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </section>
+
     <aside id="controls-leaderboard">
       <section id="score-controls">
         <h2>Enter Score (Place)</h2>
@@ -44,10 +77,17 @@
           10th = 3, 11th = 2, 12th = 1
         </div>
         <div id="score-buttons">
+          <button v-for="place in 12"
+                  :key="'score-btn-' + place"
+                  :data-place="place"
+                  @click="enterScore(place)"
+                  :disabled="!nextCellCoords">
+            {{ place }}.
+          </button>
         </div>
         <div class="action-buttons">
-          <button id="star-btn">⭐</button>
-          <button id="revert-btn">Revert Last</button>
+          <button id="star-btn" @click="toggleStar" :class="{ 'active': isStarActive }" :disabled="!nextCellCoords">⭐</button>
+          <button id="revert-btn" @click="revertLast" :disabled="scoreHistory.length === 0">Revert Last</button>
         </div>
       </section>
 
@@ -63,6 +103,12 @@
           </tr>
           </thead>
           <tbody id="leaderboard-body">
+          <tr v-for="player in rankedPlayers" :key="'lb-' + player.id" :data-player-id="player.id">
+            <td>{{ player.name }}</td>
+            <td>{{ player.totalPoints }}</td>
+            <td>{{ player.racesPlayed }}</td>
+            <td>{{ player.averagePoints.toFixed(2) }}</td>
+          </tr>
           </tbody>
         </table>
       </section>
@@ -70,31 +116,35 @@
   </main>
 </div>
 
-<div id="results-overlay">
+<div id="results-overlay" v-if="resultsVisible" @click.self="hideResultsOverlay" :class="{ 'visible': resultsVisible }">
   <div class="results-content">
     <h2>Tournament Finished!</h2>
 
-    <div class="podium-container">
-      <div class="podium-place podium-2nd">
+    <div class="podium-container" v-if="podiumPlayers.length > 0">
+      <div class="podium-place podium-2nd" v-if="podiumPlayers[1]">
         <div class="rank">2nd</div>
-        <div class="winner-name" id="winner-name-2nd">Player B</div>
-        <div class="winner-score" id="winner-score-2nd">0 pts</div>
+        <div class="winner-name" id="winner-name-2nd">{{ podiumPlayers[1].name }}</div>
+        <div class="winner-score" id="winner-score-2nd">{{ podiumPlayers[1].totalPoints }} pts</div>
       </div>
-      <div class="podium-place podium-1st">
+      <div class="podium-place podium-1st" v-if="podiumPlayers[0]">
         <div class="rank">1st 🏆</div>
-        <div class="winner-name" id="winner-name-1st">Player A</div>
-        <div class="winner-score" id="winner-score-1st">0 pts</div>
+        <div class="winner-name" id="winner-name-1st">{{ podiumPlayers[0].name }}</div>
+        <div class="winner-score" id="winner-score-1st">{{ podiumPlayers[0].totalPoints }} pts</div>
       </div>
-      <div class="podium-place podium-3rd">
+      <div class="podium-place podium-3rd" v-if="podiumPlayers[2]">
         <div class="rank">3rd</div>
-        <div class="winner-name" id="winner-name-3rd">Player C</div>
-        <div class="winner-score" id="winner-score-3rd">0 pts</div>
+        <div class="winner-name" id="winner-name-3rd">{{ podiumPlayers[2].name }}</div>
+        <div class="winner-score" id="winner-score-3rd">{{ podiumPlayers[2].totalPoints }} pts</div>
       </div>
     </div>
+    <p v-else>Not enough player data for podium.</p>
 
-    <button id="close-results-btn">Close</button>
+    <button id="close-results-btn" @click="hideResultsOverlay">Close</button>
   </div>
 </div>
+
+<script src="https://unpkg.com/vue@3"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
