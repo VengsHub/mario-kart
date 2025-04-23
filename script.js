@@ -1,6 +1,5 @@
 const { createApp } = Vue;
 
-// --- All Round Configurations ---
 const allRoundConfigurations = {
   3: Array(10).fill([0, 1, 2]),
   4: Array(10).fill([0, 1, 2, 3]),
@@ -88,7 +87,7 @@ const appConfig = {
     initializeScoresGrid() {
       this.scoresGrid = this.activeRoundConfiguration.map((roundPlayers) => (
         Array(this.RACES_PER_ROUND).fill(null).map(() => (
-          Array(roundPlayers.length).fill(null) // Use actual players in round
+          Array(roundPlayers.length).fill(null)
         ))
       ));
     },
@@ -100,11 +99,11 @@ const appConfig = {
     },
 
     selectPlayerCount(count) {
-      if (count === this.selectedPlayerCount) return; // No change
+      if (count === this.selectedPlayerCount) return;
 
       if (this.scoreHistory.length > 0) {
         if (!confirm(`Changing player count will reset the current tournament progress. Are you sure?`)) {
-          return; // User cancelled
+          return;
         }
       }
       this.selectedPlayerCount = count;
