@@ -67,6 +67,39 @@ section h2 {
     padding-right: 10px;
 }
 
+#player-count-selector {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+#player-count-selector h2 {
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.4em; /* Match other h2 */
+}
+.player-count-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.player-count-buttons button {
+    padding: 8px 15px;
+    background-color: #bdc3c7; /* Default inactive color */
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.player-count-buttons button:hover {
+    background-color: #dfe4e8;
+}
+.player-count-buttons button.active {
+    background-color: #3498db; /* Active color - same as other buttons */
+    color: white;
+}
+
 #player-names {
     margin-bottom: 25px;
 }
