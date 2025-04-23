@@ -114,32 +114,32 @@
       </section>
     </aside>
   </main>
-</div>
 
-<div id="results-overlay" v-if="resultsVisible" @click.self="hideResultsOverlay" :class="{ 'visible': resultsVisible }">
-  <div class="results-content">
-    <h2>Tournament Finished!</h2>
+  <div id="results-overlay" v-if="resultsVisible" @click.self="hideResultsOverlay" :class="{ 'visible': resultsVisible }">
+    <div class="results-content">
+      <h2>Tournament Finished!</h2>
 
-    <div class="podium-container" v-if="podiumPlayers.length > 0">
-      <div class="podium-place podium-2nd" v-if="podiumPlayers[1]">
-        <div class="rank">2nd</div>
-        <div class="winner-name" id="winner-name-2nd">{{ podiumPlayers[1].name }}</div>
-        <div class="winner-score" id="winner-score-2nd">{{ podiumPlayers[1].totalPoints }} pts</div>
+      <div class="podium-container" v-if="podiumPlayers.length > 0">
+        <div class="podium-place podium-2nd" v-if="podiumPlayers[1]">
+          <div class="rank">2nd</div>
+          <div class="winner-name" id="winner-name-2nd">{{ podiumPlayers[1].name }}</div>
+          <div class="winner-score" id="winner-score-2nd">{{ podiumPlayers[1].totalPoints }} pts</div>
+        </div>
+        <div class="podium-place podium-1st" v-if="podiumPlayers[0]">
+          <div class="rank">1st 🏆</div>
+          <div class="winner-name" id="winner-name-1st">{{ podiumPlayers[0].name }}</div>
+          <div class="winner-score" id="winner-score-1st">{{ podiumPlayers[0].totalPoints }} pts</div>
+        </div>
+        <div class="podium-place podium-3rd" v-if="podiumPlayers[2]">
+          <div class="rank">3rd</div>
+          <div class="winner-name" id="winner-name-3rd">{{ podiumPlayers[2].name }}</div>
+          <div class="winner-score" id="winner-score-3rd">{{ podiumPlayers[2].totalPoints }} pts</div>
+        </div>
       </div>
-      <div class="podium-place podium-1st" v-if="podiumPlayers[0]">
-        <div class="rank">1st 🏆</div>
-        <div class="winner-name" id="winner-name-1st">{{ podiumPlayers[0].name }}</div>
-        <div class="winner-score" id="winner-score-1st">{{ podiumPlayers[0].totalPoints }} pts</div>
-      </div>
-      <div class="podium-place podium-3rd" v-if="podiumPlayers[2]">
-        <div class="rank">3rd</div>
-        <div class="winner-name" id="winner-name-3rd">{{ podiumPlayers[2].name }}</div>
-        <div class="winner-score" id="winner-score-3rd">{{ podiumPlayers[2].totalPoints }} pts</div>
-      </div>
+      <p v-else>Not enough player data for podium.</p>
+
+      <button id="close-results-btn" @click="hideResultsOverlay">Close</button>
     </div>
-    <p v-else>Not enough player data for podium.</p>
-
-    <button id="close-results-btn" @click="hideResultsOverlay">Close</button>
   </div>
 </div>
 
