@@ -1,16 +1,16 @@
-const { createApp } = Vue;
+const {createApp} = Vue;
 
 const allRoundConfigurations = {
-  3: Array(10).fill([0, 1, 2]),
-  4: Array(10).fill([0, 1, 2, 3]),
+  3: Array(8).fill([0, 1, 2]),
+  4: Array(8).fill([0, 1, 2, 3]),
   5: [
     [0, 1, 2, 3], [0, 1, 2, 4], [0, 1, 3, 4], [0, 2, 3, 4], [1, 2, 3, 4],
     [0, 1, 2, 3], [0, 1, 2, 4], [0, 1, 3, 4], [0, 2, 3, 4], [1, 2, 3, 4]
   ],
   6: [
-    [0, 1, 2, 3], [0, 1, 4, 5], [0, 2, 3, 4], [1, 2, 3, 5], [0, 1, 2, 4],
-    [0, 1, 3, 5], [1, 2, 4, 5], [0, 2, 3, 5], [1, 3, 4, 5], [0, 2, 4, 5],
-    [0, 1, 3, 4], [0, 1, 2, 5], [1, 2, 3, 4], [0, 3, 4, 5], [2, 3, 4, 5]
+    [1, 3, 4, 5], [0, 2, 3, 5], [0, 1, 2, 4], [1, 2, 3, 4],
+    [0, 3, 4, 5], [0, 1, 2, 5], [1, 2, 4, 5], [0, 2, 3, 4],
+    [0, 1, 3, 5], [1, 2, 3, 5], [0, 1, 3, 4], [0, 2, 4, 5]
   ]
 };
 
@@ -18,10 +18,6 @@ const appConfig = {
   data() {
     return {
       RACES_PER_ROUND: 4,
-      POINTS_MAP: {
-        1: 15, 2: 12, 3: 10, 4: 9, 5: 8, 6: 7,
-        7: 6, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1
-      },
       allRoundConfigurations: allRoundConfigurations,
       selectedPlayerCount: 6,
       playerData: [],
@@ -45,13 +41,11 @@ const appConfig = {
     rankedPlayers() {
       return [...this.playerData].map(player => ({
         ...player,
-        averagePoints: player.racesPlayed === 0 ? 0 : (player.totalPoints / player.racesPlayed)
-      })).sort((a, b) => {
-        if (b.totalPoints !== a.totalPoints) {
-          return b.totalPoints - a.totalPoints;
-        }
-        return b.averagePoints - a.averagePoints;
-      });
+        averagePoints: player.racesPlayed === 0 ? 0 : (player.totalPoints
+          / player.racesPlayed)
+      })).sort((a, b) =>
+        a.averagePoints - b.averagePoints
+      );
     },
     podiumPlayers() {
       return this.rankedPlayers.slice(0, 3);
@@ -63,7 +57,8 @@ const appConfig = {
 
       this.playerData = Array(count).fill(null).map((_, i) => ({
         id: i,
-        name: this.playerData.at(i)?.name ?? `Player ${String.fromCharCode(65 + i)}`,
+        name: this.playerData.at(i)?.name ?? `Player ${String.fromCharCode(
+          65 + i)}`,
         totalPoints: 0,
         racesPlayed: 0,
       }));
@@ -93,16 +88,23 @@ const appConfig = {
     },
     updateButtonStates() {
       const controlsDisabled = !this.nextCellCoords || this.resultsVisible;
-      document.querySelectorAll('#score-buttons button, #star-btn').forEach(btn => btn.disabled = controlsDisabled);
+      document.querySelectorAll('#score-buttons button, #star-btn').forEach(
+        btn => btn.disabled = controlsDisabled);
       const revertButton = document.getElementById('revert-btn');
-      if (revertButton) revertButton.disabled = this.scoreHistory.length === 0 || this.resultsVisible;
+      if (revertButton) {
+        revertButton.disabled = this.scoreHistory.length === 0
+          || this.resultsVisible;
+      }
     },
 
     selectPlayerCount(count) {
-      if (count === this.selectedPlayerCount) return;
+      if (count === this.selectedPlayerCount) {
+        return;
+      }
 
       if (this.scoreHistory.length > 0) {
-        if (!confirm(`Changing player count will reset the current tournament progress. Are you sure?`)) {
+        if (!confirm(
+          `Changing player count will reset the current tournament progress. Are you sure?`)) {
           return;
         }
       }
@@ -111,55 +113,71 @@ const appConfig = {
 
     setDefaultNameIfEmpty(index) {
       if (this.playerData[index] && !this.playerData[index].name.trim()) {
-        this.playerData[index].name = `Player ${String.fromCharCode(65 + index)}`;
+        this.playerData[index].name = `Player ${String.fromCharCode(
+          65 + index)}`;
       }
     },
     findNextCoords() {
       const currentConfig = this.activeRoundConfiguration;
       const numRounds = currentConfig.length;
-      for (let roundIndex = 0; roundIndex < numRounds; roundIndex++) {
-        const playersInRound = currentConfig[roundIndex]?.length || 0;
-        for (let raceIndex = 0; raceIndex < this.RACES_PER_ROUND; raceIndex++) {
-          for (let columnIndex = 0; columnIndex < playersInRound; columnIndex++) {
-            if (this.scoresGrid[roundIndex]?.[raceIndex]?.[columnIndex] === null) {
-              return { round: roundIndex, race: raceIndex, col: columnIndex };
+      for (let round = 0; round < numRounds; round++) {
+        const playersInRound = currentConfig[round]?.length || 0;
+        for (let race = 0; race < this.RACES_PER_ROUND; race++) {
+          for (let column = 0; column < playersInRound; column++) {
+            if (this.scoresGrid[round]?.[race]?.[column] === null) {
+              return {round, race, column};
             }
           }
         }
       }
       return null;
     },
-    getCellScore(roundIndex, raceIndex, columnIndex) {
-      const cellData = this.scoresGrid[roundIndex]?.[raceIndex]?.[columnIndex];
-      return cellData ? cellData.score : null;
+    getCellScore(round, race, column) {
+      const cellData = this.scoresGrid[round]?.[race]?.[column];
+      return cellData ? cellData.place : null;
     },
-    isNextCell(roundIndex, raceIndex, columnIndex) {
+    isNextCell(round, race, column) {
       return this.nextCellCoords &&
-        this.nextCellCoords.round === roundIndex &&
-        this.nextCellCoords.race === raceIndex &&
-        this.nextCellCoords.col === columnIndex;
+        this.nextCellCoords.round === round &&
+        this.nextCellCoords.race === race &&
+        this.nextCellCoords.column === column;
+    },
+    canBeSelected(place) {
+      if (this.nextCellCoords) {
+        const {round, race} = this.nextCellCoords;
+        return !this.scoresGrid[round]?.[race].find(column =>
+          column?.place === place
+        );
+      }
     },
     enterScore(place) {
-      if (!this.nextCellCoords || !this.POINTS_MAP[place]) return;
-
-      const coords = this.nextCellCoords;
-      if (!this.activeRoundConfiguration[coords.round]) return;
-      const playerIndex = this.activeRoundConfiguration[coords.round][coords.col];
-
-      if(this.playerData[playerIndex] === undefined) {
-        console.error("Invalid player index derived:", playerIndex, "for coords:", coords);
+      if (!this.nextCellCoords || !this.canBeSelected(place)) {
         return;
       }
 
-      let score = this.POINTS_MAP[place];
-      if (this.isStarActive) score *= 2;
+      const coords = this.nextCellCoords;
+      if (!this.activeRoundConfiguration[coords.round]) {
+        return;
+      }
+      const playerIndex = this.activeRoundConfiguration[coords.round][coords.column];
 
-      this.scoresGrid[coords.round][coords.race][coords.col] = { score, playerIndex };
-      this.playerData[playerIndex].totalPoints += score;
+      if (this.playerData[playerIndex] === undefined) {
+        console.error("Invalid player index derived:", playerIndex,
+          "for coords:", coords);
+        return;
+      }
+
+      this.scoresGrid[coords.round][coords.race][coords.column] = {
+        place,
+        playerIndex
+      };
+      this.playerData[playerIndex].totalPoints += place;
       this.playerData[playerIndex].racesPlayed += 1;
-      this.scoreHistory.push({ coords, score, playerIndex });
+      this.scoreHistory.push({coords, place, playerIndex});
 
-      if (this.isStarActive) this.toggleStar();
+      if (this.isStarActive) {
+        this.toggleStar();
+      }
       this.nextCellCoords = this.findNextCoords();
       this.updateButtonStates();
 
@@ -171,24 +189,30 @@ const appConfig = {
       this.isStarActive = !this.isStarActive;
     },
     revertLast() {
-      if (this.scoreHistory.length === 0) return;
-      if (this.resultsVisible) this.hideResultsOverlay(false);
+      if (this.scoreHistory.length === 0) {
+        return;
+      }
+      if (this.resultsVisible) {
+        this.hideResultsOverlay(false);
+      }
 
       const lastEntry = this.scoreHistory.pop();
-      const { coords, score, playerIndex } = lastEntry;
+      const {coords, place, playerIndex} = lastEntry;
 
-      if(this.playerData[playerIndex] === undefined) {
+      if (this.playerData[playerIndex] === undefined) {
         console.error("Invalid player index found in history:", playerIndex);
         this.updateButtonStates();
         return;
       }
 
-      this.playerData[playerIndex].totalPoints -= score;
+      this.playerData[playerIndex].totalPoints -= place;
       this.playerData[playerIndex].racesPlayed -= 1;
-      this.scoresGrid[coords.round][coords.race][coords.col] = null;
+      this.scoresGrid[coords.round][coords.race][coords.column] = null;
       this.nextCellCoords = coords;
 
-      if (this.isStarActive) this.toggleStar();
+      if (this.isStarActive) {
+        this.toggleStar();
+      }
       this.updateButtonStates();
     },
     showResultsOverlay() {
@@ -205,7 +229,8 @@ const appConfig = {
     },
     handleGlobalKeyPress(event) {
       const activeElement = document.activeElement;
-      const isInputFocused = activeElement && (activeElement.tagName === 'INPUT');
+      const isInputFocused = activeElement && (activeElement.tagName
+        === 'INPUT');
 
       if (event.key === 'Backspace' && !isInputFocused) {
         event.preventDefault();
@@ -214,15 +239,18 @@ const appConfig = {
         }
         return;
       }
-      if (isInputFocused || this.resultsVisible) return;
+      if (isInputFocused || this.resultsVisible) {
+        return;
+      }
 
       if (event.key >= '1' && event.key <= '9') {
         const place = parseInt(event.key, 10);
-        if(this.nextCellCoords) {
+        if (this.nextCellCoords) {
           event.preventDefault();
           this.enterScore(place);
         }
-      } else if ((event.key === ' ' || event.code === 'Space') && this.nextCellCoords) {
+      } else if ((event.key === ' ' || event.code === 'Space')
+        && this.nextCellCoords) {
         event.preventDefault();
         this.toggleStar();
       }
