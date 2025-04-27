@@ -45,35 +45,34 @@
 
       <section id="rounds-container">
         <h2>Rounds</h2>
-        <div v-for="(playerIndices, round) in activeRoundConfiguration" :key="'round-' + round" class="round">
-          <h3>Round {{ round + 1 }}</h3>
-          <table class="round-table" :data-round-index="round">
+        <div v-for="(playerIndices, roundIndex) in activeRoundConfiguration" :key="'round-' + roundIndex" class="round">
+          <h3>Round {{ roundIndex + 1 }}</h3>
+          <table class="round-table" :data-round-index="roundIndex">
             <thead>
             <tr>
-              <th v-for="(player, column) in playerIndices"
-                  :key="'header-' + round + '-' + player"
-                  :data-player-index="player"
-                  :data-column-index="column"
-                  :title="playerData[player]?.name || ''">
-                {{ playerData[player]?.name || '' }}
+              <th v-for="(playerIndex, columnIndex) in playerIndices"
+                  :key="'header-' + roundIndex + '-' + playerIndex"
+                  :data-player-index="playerIndex"
+                  :data-column-index="columnIndex"
+                  :title="playerData[playerIndex]?.name || ''">
+                {{ playerData[playerIndex]?.name || '' }}
               </th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(_, race) in RACES_PER_ROUND" :key="'race-' + round + '-' + race">
-              <td v-for="(player, column) in playerIndices"
-                  :key="'cell-' + round + '-' + race + '-' + player"
+            <tr v-for="(_, raceIndex) in RACES_PER_ROUND" :key="'race-' + roundIndex + '-' + raceIndex">
+              <td v-for="(playerIndex, columnIndex) in playerIndices"
+                  :key="'cell-' + roundIndex + '-' + raceIndex + '-' + playerIndex"
                   class="score-cell"
                   :class="{
-                            'next-cell-highlight': isNextCell(round, race, column),
-                            'filled': getCellScore(round, race, column) !== null
+                            'next-cell-highlight': isNextCell(roundIndex, raceIndex, columnIndex),
+                            'filled': getCellScore(roundIndex, raceIndex, columnIndex) !== null
                         }"
-                  :data-round-index="round"
-                  :data-race-index="race"
-                  :data-column-index="column"
-                  :data-player-index="player"
-                  @click="nextCellCoords = {round, race, column}">
-                {{ getCellScore(round, race, column) }}
+                  :data-round-index="roundIndex"
+                  :data-race-index="raceIndex"
+                  :data-column-index="columnIndex"
+                  :data-player-index="playerIndex">
+                {{ getCellScore(roundIndex, raceIndex, columnIndex) }}
               </td>
             </tr>
             </tbody>
@@ -85,6 +84,11 @@
     <aside id="controls-leaderboard">
       <section id="score-controls">
         <h2>Enter Score (Place)</h2>
+        <div class="points-legend">
+          <strong>Points:</strong><br> 1st = 15, 2nd = 12, 3rd = 10, 4th = 9, <br>
+          5th = 8, 6th = 7, 7th = 6, 8th = 5, 9th = 4, <br>
+          10th = 3, 11th = 2, 12th = 1
+        </div>
         <div id="score-buttons">
           <button v-for="place in 12"
                   :key="'score-btn-' + place"
@@ -106,6 +110,7 @@
           <thead>
           <tr>
             <th>Player</th>
+            <th>Points</th>
             <th>Races</th>
             <th>Avg.</th>
           </tr>
@@ -113,6 +118,7 @@
           <tbody id="leaderboard-body">
           <tr v-for="player in rankedPlayers" :key="'lb-' + player.id" :data-player-id="player.id">
             <td>{{ player.name }}</td>
+            <td>{{ player.totalPoints }}</td>
             <td>{{ player.racesPlayed }}</td>
             <td>{{ player.averagePoints.toFixed(2) }}</td>
           </tr>
@@ -133,17 +139,17 @@
         <div class="podium-place podium-2nd" v-if="podiumPlayers[1]">
           <div class="rank">2nd</div>
           <div class="winner-name" id="winner-name-2nd">{{ podiumPlayers[1].name }}</div>
-          <div class="winner-score" id="winner-score-2nd">{{ podiumPlayers[1].averagePoints }} pts</div>
+          <div class="winner-score" id="winner-score-2nd">{{ podiumPlayers[1].totalPoints }} pts</div>
         </div>
         <div class="podium-place podium-1st" v-if="podiumPlayers[0]">
           <div class="rank">1st 🏆</div>
           <div class="winner-name" id="winner-name-1st">{{ podiumPlayers[0].name }}</div>
-          <div class="winner-score" id="winner-score-1st">{{ podiumPlayers[0].averagePoints }} pts</div>
+          <div class="winner-score" id="winner-score-1st">{{ podiumPlayers[0].totalPoints }} pts</div>
         </div>
         <div class="podium-place podium-3rd" v-if="podiumPlayers[2]">
           <div class="rank">3rd</div>
           <div class="winner-name" id="winner-name-3rd">{{ podiumPlayers[2].name }}</div>
-          <div class="winner-score" id="winner-score-3rd">{{ podiumPlayers[2].averagePoints }} pts</div>
+          <div class="winner-score" id="winner-score-3rd">{{ podiumPlayers[2].totalPoints }} pts</div>
         </div>
       </div>
       <p v-else>Not enough player data for podium.</p>
