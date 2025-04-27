@@ -74,8 +74,8 @@
                   :data-column-index="columnIndex"
                   :data-player-index="playerIndex"
                   @click="nextCellCoords = {round: roundIndex, race: raceIndex, col: columnIndex}">
-                  {{ getCell(roundIndex, raceIndex, columnIndex)?.score }}
-                <span v-if="!getCell(roundIndex, raceIndex, columnIndex)?.star && getCell(roundIndex, raceIndex, columnIndex)?.score">
+                {{ getCell(roundIndex, raceIndex, columnIndex)?.score }}<span v-if="getCell(roundIndex, raceIndex, columnIndex)?.star">*</span>
+                <span v-if="getCell(roundIndex, raceIndex, columnIndex)?.score">
                   ({{PLACES_MAP[getCell(roundIndex, raceIndex, columnIndex)?.score]}})
                 </span>
               </td>
@@ -92,7 +92,8 @@
         <div class="points-legend">
           <strong>Points:</strong><br> 1st = 13, 2nd = 11, 3rd = 10, 4th = 9, <br>
           5th = 8, 6th = 7, 7th = 6, 8th = 5, 9th = 4, <br>
-          10th = 3, 11th = 2, 12th = 1
+          10th = 3, 11th = 2, 12th = 1 <br>
+          star = double points
         </div>
         <div id="score-buttons">
           <button v-for="place in 12"

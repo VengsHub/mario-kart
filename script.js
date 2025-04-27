@@ -157,9 +157,9 @@ const appConfig = {
       }
 
       let score = this.POINTS_MAP[place];
-      if (this.isStarActive) score *= 2;
 
       this.scoresGrid[coords.round][coords.race][coords.col] = { score, playerIndex, star: this.isStarActive };
+      if (this.isStarActive) score *= 2;
       this.playerData[playerIndex].totalPoints += score;
       this.playerData[playerIndex].racesPlayed += 1;
       this.scoreHistory.push({ coords, score, playerIndex });
@@ -176,7 +176,7 @@ const appConfig = {
       if (this.nextCellCoords) {
         const {round, race} = this.nextCellCoords;
         return !this.scoresGrid[round]?.[race].find(column =>
-          column?.score === this.POINTS_MAP[place] || column?.score === 2 * this.POINTS_MAP[place]
+          column?.score === this.POINTS_MAP[place]
         );
       }
     },
@@ -188,7 +188,7 @@ const appConfig = {
       if (this.resultsVisible) this.hideResultsOverlay(false);
 
       const lastEntry = this.scoreHistory.pop();
-      const { coords, score, playerIndex } = lastEntry;
+      const { coords, score, playerIndex, star } = lastEntry;
 
       if(this.playerData[playerIndex] === undefined) {
         console.error("Invalid player index found in history:", playerIndex);
@@ -196,7 +196,7 @@ const appConfig = {
         return;
       }
 
-      this.playerData[playerIndex].totalPoints -= score;
+      this.playerData[playerIndex].totalPoints -= star ? 2 * score : score;
       this.playerData[playerIndex].racesPlayed -= 1;
       this.scoresGrid[coords.round][coords.race][coords.col] = null;
       this.nextCellCoords = coords;
