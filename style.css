@@ -226,6 +226,10 @@ section h2 {
     box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.4);
 }
 
+.round-table td.star-highlight {
+    color: var(--mk-green);
+}
+
 .points-legend {
     font-size: 0.8em; /* Make it small */
     color: var(--mk-dark-grey);

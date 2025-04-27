@@ -1,16 +1,16 @@
 const { createApp } = Vue;
 
 const allRoundConfigurations = {
-  3: Array(10).fill([0, 1, 2]),
-  4: Array(10).fill([0, 1, 2, 3]),
+  3: Array(8).fill([0, 1, 2]),
+  4: Array(8).fill([0, 1, 2, 3]),
   5: [
     [0, 1, 2, 3], [0, 1, 2, 4], [0, 1, 3, 4], [0, 2, 3, 4], [1, 2, 3, 4],
     [0, 1, 2, 3], [0, 1, 2, 4], [0, 1, 3, 4], [0, 2, 3, 4], [1, 2, 3, 4]
   ],
   6: [
-    [0, 1, 2, 3], [0, 1, 4, 5], [0, 2, 3, 4], [1, 2, 3, 5], [0, 1, 2, 4],
-    [0, 1, 3, 5], [1, 2, 4, 5], [0, 2, 3, 5], [1, 3, 4, 5], [0, 2, 4, 5],
-    [0, 1, 3, 4], [0, 1, 2, 5], [1, 2, 3, 4], [0, 3, 4, 5], [2, 3, 4, 5]
+    [1, 3, 4, 5], [0, 2, 3, 5], [0, 1, 2, 4], [1, 2, 3, 4],
+    [0, 3, 4, 5], [0, 1, 2, 5], [1, 2, 4, 5], [0, 2, 3, 4],
+    [0, 1, 3, 5], [1, 2, 3, 5], [0, 1, 3, 4], [0, 2, 4, 5]
   ]
 };
 
@@ -19,8 +19,13 @@ const appConfig = {
     return {
       RACES_PER_ROUND: 4,
       POINTS_MAP: {
-        1: 15, 2: 12, 3: 10, 4: 9, 5: 8, 6: 7,
+        1: 13, 2: 11, 3: 10, 4: 9, 5: 8, 6: 7,
         7: 6, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1
+      },
+      PLACES_MAP: {
+        13: '1st', 11: '2nd', 10: '3rd', 9: '4th',
+        8: '5th', 7: '6th', 6: '7th', 5: '8th',
+        4: '9th', 3: '10th', 2: '11th', 1: '12th'
       },
       allRoundConfigurations: allRoundConfigurations,
       selectedPlayerCount: 6,
@@ -129,9 +134,9 @@ const appConfig = {
       }
       return null;
     },
-    getCellScore(roundIndex, raceIndex, columnIndex) {
+    getCell(roundIndex, raceIndex, columnIndex) {
       const cellData = this.scoresGrid[roundIndex]?.[raceIndex]?.[columnIndex];
-      return cellData ? cellData.score : null;
+      return cellData ?? null;
     },
     isNextCell(roundIndex, raceIndex, columnIndex) {
       return this.nextCellCoords &&
@@ -140,7 +145,7 @@ const appConfig = {
         this.nextCellCoords.col === columnIndex;
     },
     enterScore(place) {
-      if (!this.nextCellCoords || !this.POINTS_MAP[place]) return;
+        if (!this.nextCellCoords || !this.POINTS_MAP[place] || !this.canBeSelected(place)) return;
 
       const coords = this.nextCellCoords;
       if (!this.activeRoundConfiguration[coords.round]) return;
@@ -154,7 +159,7 @@ const appConfig = {
       let score = this.POINTS_MAP[place];
       if (this.isStarActive) score *= 2;
 
-      this.scoresGrid[coords.round][coords.race][coords.col] = { score, playerIndex };
+      this.scoresGrid[coords.round][coords.race][coords.col] = { score, playerIndex, star: this.isStarActive };
       this.playerData[playerIndex].totalPoints += score;
       this.playerData[playerIndex].racesPlayed += 1;
       this.scoreHistory.push({ coords, score, playerIndex });
@@ -165,6 +170,14 @@ const appConfig = {
 
       if (this.nextCellCoords === null && !this.resultsVisible) {
         setTimeout(this.showResultsOverlay, 300);
+      }
+    },
+    canBeSelected(place) {
+      if (this.nextCellCoords) {
+        const {round, race} = this.nextCellCoords;
+        return !this.scoresGrid[round]?.[race].find(column =>
+          column?.score === this.POINTS_MAP[place] || column?.score === 2 * this.POINTS_MAP[place]
+        );
       }
     },
     toggleStar() {
