@@ -37,6 +37,7 @@ const appConfig = {
       scoreHistory: [],
       nextCellCoords: null,
       resultsVisible: false,
+      multiplier: 0
     };
   },
   computed: {
@@ -162,6 +163,7 @@ const appConfig = {
 
       this.scoresGrid[coords.round][coords.race][coords.col] = { score, playerIndex, star: this.isStarActive };
       if (this.isStarActive) score *= 2;
+      score += coords.round * this.multiplier * score;
       this.playerData[playerIndex].totalPoints += score;
       this.playerData[playerIndex].racesPlayed += 1;
       this.scoreHistory.push({ coords, score, playerIndex });

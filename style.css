@@ -68,9 +68,12 @@ section h2 {
 }
 
 #player-count-selector {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
     border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 #player-count-selector h2 {
     margin-bottom: 10px;
@@ -107,7 +110,6 @@ section h2 {
     display: flex;
     gap: 10px;
     justify-content: center;
-    margin-top: 8px;
 }
 #player-names {
     margin-bottom: 25px;
@@ -165,6 +167,9 @@ section h2 {
     margin-bottom: 10px;
     font-size: 1.5em;
     text-shadow: 1px 1px 0px var(--mk-white), 2px 2px 0px rgba(0, 0, 0, 0.1);
+}
+.round h3 span {
+    color: var(--mk-dark-blue);
 }
 
 .round-table,

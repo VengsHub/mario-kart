@@ -27,7 +27,17 @@
         </div>
         <div class="round-slider">
           <label for="rounds">Rounds: {{ selectedRoundCount }}</label>
-          <input type="range" id="rounds" :min="nextCellCoords?.round ? nextCellCoords?.round + 1 : 1" max="15" value="1" step="1" v-model="selectedRoundCount">
+          <input type="range" id="rounds"
+                 :min="nextCellCoords?.round ? nextCellCoords?.round + 1 : 1" max="15"
+                 value="1" step="1" v-model="selectedRoundCount">
+        </div>
+        <div class="player-count-buttons" title="Point multiplier increase per round">
+          <button v-for="multi in [0, 0.1, 0.2, 0.5, 1]"
+                  :key="'multi-btn-' + multi"
+                  @click="multiplier = multi"
+                  :class="{ 'active': multiplier === multi, 'disabled': scoresGrid[0]?.[0]?.[0] }">
+            {{ multi }}x
+          </button>
         </div>
       </section>
 
@@ -50,7 +60,7 @@
       <section id="rounds-container">
         <h2>Rounds</h2>
         <div v-for="(playerIndices, roundIndex) in activeRoundConfiguration" :key="'round-' + roundIndex" class="round">
-          <h3>Round {{ roundIndex + 1 }}</h3>
+          <h3>Round {{ roundIndex + 1 }} - <span>({{(1 + roundIndex * multiplier).toFixed(1)}}x)</span></h3>
           <table class="round-table" :data-round-index="roundIndex">
             <thead>
             <tr>
