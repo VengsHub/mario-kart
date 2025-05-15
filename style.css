@@ -99,7 +99,16 @@ section h2 {
     background-color: #3498db; /* Active color - same as other buttons */
     color: white;
 }
-
+.player-count-buttons button.disabled {
+    pointer-events: none;
+    opacity: 0.8;
+}
+.round-slider {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 8px;
+}
 #player-names {
     margin-bottom: 25px;
 }

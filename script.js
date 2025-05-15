@@ -1,17 +1,18 @@
 const { createApp } = Vue;
 
 const allRoundConfigurations = {
-  3: Array(8).fill([0, 1, 2]),
-  4: Array(8).fill([0, 1, 2, 3]),
-  5: [
-    [0, 1, 2, 3], [0, 1, 2, 4], [0, 1, 3, 4], [0, 2, 3, 4], [1, 2, 3, 4],
+  3: rounds => Array(+rounds).fill([0, 1, 2]),
+  4: rounds => Array(+rounds).fill([0, 1, 2, 3]),
+  5: rounds => Array(Math.floor(Math.max(5, +rounds) / 5)).fill([
     [0, 1, 2, 3], [0, 1, 2, 4], [0, 1, 3, 4], [0, 2, 3, 4], [1, 2, 3, 4]
-  ],
-  6: [
-    [1, 3, 4, 5], [0, 2, 3, 5], [0, 1, 2, 4], [1, 2, 3, 4],
-    [0, 3, 4, 5], [0, 1, 2, 5], [1, 2, 4, 5], [0, 2, 3, 4],
-    [0, 1, 3, 5], [1, 2, 3, 5], [0, 1, 3, 4], [0, 2, 4, 5]
-  ]
+  ]).flat(),
+  6: rounds => [
+    [2,3,4,5], [0,1,4,5], [0,1,2,3],
+    [1,3,4,5], [0,2,3,5], [0,1,2,4],
+    [1,2,4,5], [0,2,3,4], [0,1,3,5],
+    [1,2,3,5], [0,2,4,5], [0,1,3,4],
+    [1,2,3,4], [0,3,4,5], [0,1,2,5]
+  ].slice(0, Math.floor(Math.max(3, +rounds) / 3) * 3)
 };
 
 const appConfig = {
@@ -29,6 +30,7 @@ const appConfig = {
       },
       allRoundConfigurations: allRoundConfigurations,
       selectedPlayerCount: 6,
+      selectedRoundCount: 15,
       playerData: [],
       scoresGrid: [],
       isStarActive: false,
@@ -39,7 +41,7 @@ const appConfig = {
   },
   computed: {
     activeRoundConfiguration() {
-      return this.allRoundConfigurations[this.selectedPlayerCount] || [];
+      return this.allRoundConfigurations[this.selectedPlayerCount](this.selectedRoundCount) || [];
     },
     numRounds() {
       return this.activeRoundConfiguration.length;
