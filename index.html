@@ -49,6 +49,7 @@
             <input type="text"
                    :id="'player-name-' + index"
                    class="player-name-input"
+                   onfocus="this.select()"
                    :placeholder="'Player ' + String.fromCharCode(65 + index)"
                    maxlength="8"
                    v-model="player.name"
