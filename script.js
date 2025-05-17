@@ -163,7 +163,9 @@ const appConfig = {
 
       this.scoresGrid[coords.round][coords.race][coords.col] = { score, playerIndex, star: this.isStarActive };
       if (this.isStarActive) score *= 2;
-      score += coords.round * this.multiplier * score;
+      const playerRound = Math.floor(this.playerData[playerIndex].racesPlayed / 4);
+      const roundedBonusPoints = Math.round(playerRound * this.multiplier * score * 10) / 10;
+      score += roundedBonusPoints;
       this.playerData[playerIndex].totalPoints += score;
       this.playerData[playerIndex].racesPlayed += 1;
       this.scoreHistory.push({ coords, score, playerIndex });

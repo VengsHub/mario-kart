@@ -60,7 +60,7 @@
       <section id="rounds-container">
         <h2>Rounds</h2>
         <div v-for="(playerIndices, roundIndex) in activeRoundConfiguration" :key="'round-' + roundIndex" class="round">
-          <h3>Round {{ roundIndex + 1 }} - <span>({{(1 + roundIndex * multiplier).toFixed(1)}}x)</span></h3>
+          <h3>Round {{ roundIndex + 1 }} - <span>(〜{{(1 + roundIndex * multiplier).toFixed(1)}}x)</span></h3>
           <table class="round-table" :data-round-index="roundIndex">
             <thead>
             <tr>
