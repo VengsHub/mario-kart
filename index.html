@@ -14,37 +14,20 @@
 <div id="app" class="container">
   <main class="content-area">
     <section id="left-column">
-
-      <section id="player-count-selector">
+      <section id="config">
         <h2>Configurations</h2>
-        <div class="player-count-buttons">
+        <div class="count-buttons">
+          <label>Player count:</label>
           <button v-for="count in [3, 4, 5, 6]"
                   :key="'count-btn-' + count"
                   @click="selectPlayerCount(count)"
-                  :class="{ 'active': selectedPlayerCount === count, 'disabled': scoresGrid[0]?.[0]?.[0] }">
-            {{ count }} Players
+                  :class="{ 'active': playerCount === count, 'disabled': enteredScores[0]?.[0]?.[0] }">
+            {{ count }}
           </button>
         </div>
-        <div class="round-slider">
-          <label for="rounds">Rounds: {{ selectedRoundCount }}</label>
-          <input type="range" id="rounds"
-                 :min="nextCellCoords?.round ? nextCellCoords?.round + 1 : 1" max="15"
-                 value="1" step="1" v-model="selectedRoundCount">
-        </div>
-        <div class="player-count-buttons" title="Point multiplier increase per round">
-          <button v-for="multi in [0, 0.1, 0.2, 0.5, 1]"
-                  :key="'multi-btn-' + multi"
-                  @click="multiplier = multi"
-                  :class="{ 'active': multiplier === multi, 'disabled': scoresGrid[0]?.[0]?.[0] }">
-            {{ multi }}x
-          </button>
-        </div>
-      </section>
 
-      <header id="player-names">
-        <h2>Player Names</h2>
         <div class="player-inputs">
-          <label v-for="(player, index) in playerData" :key="player.id">
+          <label v-for="(player, index) in playerData" :key="index">
             {{ String.fromCharCode(65 + index) }}:
             <input type="text"
                    :id="'player-name-' + index"
@@ -56,12 +39,32 @@
                    @blur="setDefaultNameIfEmpty(index)">
           </label>
         </div>
-      </header>
+
+        <div class="count-buttons">
+          <label>Rounds:</label>
+          <button v-for="count in possibleRoundCount"
+                  :key="'count-btn-' + count"
+                  @click="totalRounds = count"
+                  :class="{ 'active': totalRounds === count, 'disabled': enteredScores[0]?.[0]?.[0] }">
+            {{ count }}
+          </button>
+        </div>
+
+        <div class="count-buttons">
+          <label>Races per round:</label>
+          <button v-for="count in [4, 5, 6, 7, 8]"
+                  :key="'count-btn-' + count"
+                  @click="racesPerRound = count"
+                  :class="{ 'active': racesPerRound === count, 'disabled': enteredScores[0]?.[0]?.[0] }">
+            {{ count }}
+          </button>
+        </div>
+      </section>
 
       <section id="rounds-container">
-        <h2>Rounds</h2>
+        <h2></h2>
         <div v-for="(playerIndices, roundIndex) in activeRoundConfiguration" :key="'round-' + roundIndex" class="round">
-          <h3>Round {{ roundIndex + 1 }} <span>(〜{{(1 + roundIndex * multiplier).toFixed(1)}}x)</span></h3>
+          <h3>Round {{ roundIndex + 1 }} <span>(〜{{(1 + roundIndex * 0.1).toFixed(1)}}x)</span></h3>
           <table class="round-table" :data-round-index="roundIndex">
             <thead>
             <tr>
@@ -75,13 +78,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(_, raceIndex) in RACES_PER_ROUND" :key="'race-' + roundIndex + '-' + raceIndex">
+            <tr v-for="(_, raceIndex) in racesPerRound" :key="'race-' + roundIndex + '-' + raceIndex">
               <td v-for="(playerIndex, columnIndex) in playerIndices"
                   :key="'cell-' + roundIndex + '-' + raceIndex + '-' + playerIndex"
                   class="score-cell"
                   :class="{
+                            'highlight-row': this.nextCellCoords.round === roundIndex && this.nextCellCoords.race === raceIndex,
                             'next-cell-highlight': isNextCell(roundIndex, raceIndex, columnIndex),
-                            'star-highlight': getCell(roundIndex, raceIndex, columnIndex)?.star,
                             'filled': getCell(roundIndex, raceIndex, columnIndex)?.score !== null
                         }"
                   :data-round-index="roundIndex"
@@ -89,10 +92,9 @@
                   :data-column-index="columnIndex"
                   :data-player-index="playerIndex"
                   @click="nextCellCoords = {round: roundIndex, race: raceIndex, col: columnIndex}">
-                {{ getCell(roundIndex, raceIndex, columnIndex)?.score }}<span
-                  v-if="getCell(roundIndex, raceIndex, columnIndex)?.star">*</span>
-                <span v-if="getCell(roundIndex, raceIndex, columnIndex)?.score">
-                  ({{PLACES_MAP[getCell(roundIndex, raceIndex, columnIndex)?.score]}})
+                {{ getCell(roundIndex, raceIndex, columnIndex)?.score }}
+                <span v-if="getCell(roundIndex, raceIndex, columnIndex)?.place">
+                  ({{getCell(roundIndex, raceIndex, columnIndex)?.place}}.)
                 </span>
               </td>
             </tr>
@@ -102,32 +104,7 @@
       </section>
     </section>
 
-    <aside id="controls-leaderboard">
-      <section id="score-controls">
-        <h2>Enter Score (Place)</h2>
-        <div class="points-legend">
-          <strong>Points:</strong><br> 1st = 13, 2nd = 11, 3rd = 10, 4th = 9, <br>
-          5th = 8, 6th = 7, 7th = 6, 8th = 5, 9th = 4, <br>
-          10th = 3, 11th = 2, 12th = 1 <br>
-          star = double points
-        </div>
-        <div id="score-buttons">
-          <button v-for="place in 12"
-                  :key="'score-btn-' + place"
-                  :data-place="place"
-                  @click="enterScore(place)"
-                  :disabled="!nextCellCoords">
-            {{ place }}.
-          </button>
-        </div>
-        <div class="action-buttons">
-          <button id="star-btn" @click="toggleStar" :class="{ 'active': isStarActive }" :disabled="!nextCellCoords">
-            ⭐
-          </button>
-          <button id="revert-btn" @click="revertLast" :disabled="scoreHistory.length === 0">Revert Last</button>
-        </div>
-      </section>
-
+    <aside id="right-column">
       <section id="leaderboard">
         <h2>Leaderboard</h2>
         <table>
@@ -146,7 +123,7 @@
             <td>{{ player.racesPlayed }}</td>
             <td>{{ player.averagePoints.toFixed(2) }}</td>
           </tr>
-          <tr v-for="i in (6 - selectedPlayerCount)" :key="'empty-lb-' + i" class="empty-row">
+          <tr v-for="i in (6 - playerCount)" :key="'empty-lb-' + i" class="empty-row">
             <td>&nbsp;</td>
             <td></td>
             <td></td>
@@ -154,6 +131,21 @@
           </tr>
           </tbody>
         </table>
+      </section>
+      <section id="score-controls">
+        <h2>Enter Score (Place)</h2>
+        <div id="score-buttons">
+          <button v-for="place in 24"
+                  :key="'score-btn-' + place"
+                  :data-place="place"
+                  @click="enterScore(place)"
+                  :disabled="!nextCellCoords">
+            {{ place }}.
+          </button>
+        </div>
+        <div class="action-buttons">
+          <button id="revert-btn" @click="revertLast" :disabled="scoreHistory.length === 0">Revert Last</button>
+        </div>
       </section>
     </aside>
   </main>

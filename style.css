@@ -40,18 +40,16 @@ body {
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
 }
 
-header h2,
 section h2 {
     font-family: var(--font-mario);
     color: var(--mk-red);
     text-shadow: 2px 2px 0px var(--mk-white), 4px 4px 0px rgba(0, 0, 0, 0.1);
     border-bottom: 4px dashed var(--mk-dark-blue);
-    padding-bottom: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     margin-top: 0;
     letter-spacing: 1px;
     text-align: center;
-    font-size: 1.8em;
+    font-size: 1.6em;
 }
 
 .content-area {
@@ -67,25 +65,18 @@ section h2 {
     padding-right: 10px;
 }
 
-#player-count-selector {
+#config {
     padding-bottom: 16px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #eee;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
 }
-#player-count-selector h2 {
-    margin-bottom: 10px;
-    text-align: center;
-    font-size: 1.4em; /* Match other h2 */
-}
-.player-count-buttons {
+.count-buttons {
     display: flex;
     gap: 10px;
     justify-content: center;
 }
-.player-count-buttons button {
+.count-buttons button {
     padding: 8px 15px;
     background-color: #bdc3c7; /* Default inactive color */
     color: #333;
@@ -95,14 +86,14 @@ section h2 {
     font-weight: bold;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
-.player-count-buttons button:hover {
+.count-buttons button:hover {
     background-color: #dfe4e8;
 }
-.player-count-buttons button.active {
+.count-buttons button.active {
     background-color: #3498db; /* Active color - same as other buttons */
     color: white;
 }
-.player-count-buttons button.disabled {
+.count-buttons button.disabled {
     pointer-events: none;
     opacity: 0.8;
 }
@@ -111,18 +102,16 @@ section h2 {
     gap: 10px;
     justify-content: center;
 }
-#player-names {
-    margin-bottom: 25px;
-}
 
-#player-names .player-inputs {
+.player-inputs {
     display: grid;
     grid-template-columns: repeat(3, auto);
     gap: 15px 20px;
     justify-content: center;
+    padding: 6px;
 }
 
-#player-names label {
+.player-inputs label {
     font-weight: bold;
     font-size: 1.1em;
     color: var(--mk-dark-blue);
@@ -131,7 +120,7 @@ section h2 {
     gap: 5px;
 }
 
-#player-names input {
+.player-inputs input {
     padding: 8px 10px;
     border: 3px solid var(--mk-blue);
     border-radius: 8px;
@@ -145,10 +134,9 @@ section h2 {
 #rounds-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
 
-#controls-leaderboard {
+#right-column {
     flex: 1;
     min-width: 290px;
     position: sticky;
@@ -162,14 +150,15 @@ section h2 {
 
 .round h3 {
     font-family: var(--font-mario);
-    color: var(--mk-blue);
+    color: var(--mk-red);
     text-align: center;
+    margin-top: 0;
     margin-bottom: 10px;
     font-size: 1.5em;
     text-shadow: 1px 1px 0px var(--mk-white), 2px 2px 0px rgba(0, 0, 0, 0.1);
 }
 .round h3 span {
-    color: var(--mk-dark-blue);
+    color: var(--mk-blue);
 }
 
 .round-table,
@@ -182,6 +171,7 @@ section h2 {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 3px 3px 5px rgba(0,0,0,0.15);
+    margin-bottom: 12px;
 }
 
 .round-table th,
@@ -231,34 +221,20 @@ section h2 {
 .round-table td.filled {
     background-color: #fffacd;
     color: var(--mk-black);
+
+    span {
+        color: var(--mk-blue);
+    }
+}
+
+.round-table td.highlight-row {
+    background-color: var(--mk-yellow);
 }
 
 .round-table td.next-cell-highlight {
-    background-color: var(--mk-yellow);
     outline: 3px solid var(--mk-red);
     outline-offset: -2px;
     box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.4);
-}
-
-.round-table td.star-highlight {
-    color: var(--mk-green);
-}
-
-.points-legend {
-    font-size: 0.8em; /* Make it small */
-    color: var(--mk-dark-grey);
-    background-color: #ddeeff; /* Light blue background */
-    padding: 6px 10px;
-    border-radius: 5px;
-    margin-bottom: 12px; /* Space before score buttons */
-    text-align: center;
-    line-height: 1.4;
-    border: 1px solid var(--mk-blue);
-}
-
-.points-legend strong {
-    color: var(--mk-dark-blue);
-    font-weight: bold; /* Ensure it's bold */
 }
 
 #score-controls {
@@ -324,31 +300,6 @@ section h2 {
 .action-buttons button:active {
     transform: scale(0.98) translateY(1px);
     box-shadow: 0px 2px 0px var(--mk-dark-grey);
-}
-
-#star-btn {
-    background-color: var(--mk-blue);
-    color: var(--mk-white);
-    border-color: var(--mk-dark-blue);
-    box-shadow: 0px 3px 0px var(--mk-dark-blue);
-}
-
-#star-btn:hover {
-    background-color: #33aeff;
-}
-
-#star-btn.active {
-    background-color: var(--mk-yellow);
-    color: var(--mk-black);
-    border-color: #b38f00;
-    box-shadow: 0px 3px 0px #b38f00;
-    font-size: 1.3em;
-    transform: scale(1.05) translateY(-1px);
-}
-
-#star-btn.active:active {
-    transform: scale(1.0) translateY(1px);
-    box-shadow: 0px 2px 0px #b38f00;
 }
 
 #revert-btn {
