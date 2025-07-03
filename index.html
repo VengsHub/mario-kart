@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mario Kart Tournament Tracker (Vue)</title>
+  <title>Mario Kart Tournament Tracker</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,14 +14,18 @@
 <div id="app" class="container">
   <main class="content-area">
     <section id="left-column">
-      <section id="config">
+      <div v-if="doneConfiguring" class="map-container" @click="currentTrack = getRandomTrack(8)">
+        <div class="map-marker" :style="{left: currentTrack.left, top: currentTrack.top}"></div>
+        <img src="world-map-named.png" alt="world map" width="400">
+      </div>
+      <section v-if="!doneConfiguring" id="config">
         <h2>Configurations</h2>
         <div class="count-buttons">
           <label>Player count:</label>
           <button v-for="count in [3, 4, 5, 6]"
                   :key="'count-btn-' + count"
                   @click="selectPlayerCount(count)"
-                  :class="{ 'active': playerCount === count, 'disabled': enteredScores[0]?.[0]?.[0] }">
+                  :class="{ 'active': playerCount === count }">
             {{ count }}
           </button>
         </div>
@@ -45,7 +49,7 @@
           <button v-for="count in possibleRoundCount"
                   :key="'count-btn-' + count"
                   @click="totalRounds = count"
-                  :class="{ 'active': totalRounds === count, 'disabled': enteredScores[0]?.[0]?.[0] }">
+                  :class="{ 'active': totalRounds === count }">
             {{ count }}
           </button>
         </div>
@@ -55,10 +59,12 @@
           <button v-for="count in [4, 5, 6, 7, 8]"
                   :key="'count-btn-' + count"
                   @click="racesPerRound = count"
-                  :class="{ 'active': racesPerRound === count, 'disabled': enteredScores[0]?.[0]?.[0] }">
+                  :class="{ 'active': racesPerRound === count }">
             {{ count }}
           </button>
         </div>
+
+        <button class="done-button" @click="doneConfiguring = true">Done!</button>
       </section>
 
       <section id="rounds-container">

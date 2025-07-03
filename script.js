@@ -1,38 +1,36 @@
 const {createApp} = Vue;
 
-const trackNames = [
-  'Mario Bros. Circuit',
-  'Crown City',
-  'Whistlestop Summit',
-  'DK Spaceport',
-  'Desert Hills',
-  'Shy Guy Bazaar',
-  'Wario Stadium',
-  'Airship Fortress',
-  'DK Pass',
-  'Starview Peak',
-  'Sky-High Sundae',
-  'Wario Shipyard',
-  'Koopa Troopa Beach',
-  'Faraway Oasis',
-  'Crown City',
-  'Peach Stadium',
-  'Peach Beach',
-  'Salty Salty Speedway',
-  'Dino Dino Jungle',
-  'Great ? Block Ruins',
-  'Cheep Cheep Falls',
-  'Dandelion Depths',
-  'Boo Cinema',
-  'Dry Bones Burnout',
-  'Moo Moo Meadows',
-  'Choco Mountain',
-  'Toad\'s Factory',
-  'Bowser\'s Castle',
-  'Acorn Heights',
-  'Mario Circuit',
-  'Peach Stadium',
-  'Rainbow Road'
+const allTracks = [
+  {name: 'Mario Bros. Circuit', left: '60px', top: '194px'},
+  {name: 'Crown City', left: '126px', top: '237px'},
+  {name: 'Whistlestop Summit', left: '63px', top: '270px'},
+  {name: 'DK Spaceport', left: '131px', top: '288px'},
+  {name: 'Desert Hills', left: '11px', top: '232px'},
+  {name: 'Shy Guy Bazaar', left: '14px', top: '157px'},
+  {name: 'Wario Stadium', left: '73px', top: '127px'},
+  {name: 'Airship Fortress', left: '24px', top: '86px'},
+  {name: 'DK Pass', left: '280px', top: '131px'},
+  {name: 'Starview Peak', left: '282px', top: '58px'},
+  {name: 'Sky-High Sundae', left: '330px', top: '96px'},
+  {name: 'Wario Shipyard', left: '336px', top: '171px'},
+  {name: 'Koopa Troopa Beach', left: '176px', top: '276px'},
+  {name: 'Faraway Oasis', left: '232px', top: '229px'},
+  {name: 'Peach Beach', left: '333px', top: '229px'},
+  {name: 'Salty Salty Speedway', left: '282px', top: '198px'},
+  {name: 'Dino Dino Jungle', left: '243px', top: '297px'},
+  {name: 'Great ? Block Ruins', left: '297px', top: '274px'},
+  {name: 'Cheep Cheep Falls', left: '234px', top: '164px'},
+  {name: 'Dandelion Depths', left: '230px', top: '105px'},
+  {name: 'Boo Cinema', left: '237px', top: '30px'},
+  {name: 'Dry Bones Burnout', left: '126px', top: '34px'},
+  {name: 'Moo Moo Meadows', left: '179px', top: '127px'},
+  {name: 'Choco Mountain', left: '123px', top: '164px'},
+  {name: 'Toad\'s Factory', left: '130px', top: '98px'},
+  {name: 'Bowser\'s Castle', left: '76px', top: '34px'},
+  {name: 'Acorn Heights', left: '177px', top: '7px'},
+  {name: 'Mario Circuit', left: '181px', top: '69px'},
+  {name: 'Peach Stadium', left: '178px', top: '184px'},
+  {name: 'Rainbow Road', left: '178px', top: '234px'}
 ];
 const lastSelectedTracks = [];
 
@@ -76,6 +74,7 @@ const appConfig = {
       totalRounds: 15,
       racesPerRound: 4,
       enteredScores: {},
+      currentTrack: this.getRandomTrack(),
       scoreHistory: [],
       resultsVisible: false,
       doneConfiguring: false
@@ -136,13 +135,12 @@ const appConfig = {
     getRandomTrack(cooldown = 4) {
       const tracksToIgnore = lastSelectedTracks.slice(-cooldown);
 
-      const eligibleTracks = trackNames.filter(
-        track => !tracksToIgnore.includes(track));
+      const eligibleTracks = allTracks.filter(track => !tracksToIgnore.includes(track.name));
 
       const randomIndex = Math.floor(Math.random() * eligibleTracks.length);
       const selectedTrack = eligibleTracks[randomIndex];
 
-      lastSelectedTracks.push(selectedTrack);
+      lastSelectedTracks.push(selectedTrack.name);
 
       if (lastSelectedTracks.length > 12) {
         lastSelectedTracks.shift();
