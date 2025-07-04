@@ -46,7 +46,16 @@ const allRoundConfigurations = {
     [1, 2, 4, 5], [0, 2, 3, 4], [0, 1, 3, 5],
     [1, 2, 3, 5], [0, 2, 4, 5], [0, 1, 3, 4],
     [1, 2, 3, 4], [0, 3, 4, 5], [0, 1, 2, 5]
-  ].slice(0, Math.floor(Math.max(3, +rounds) / 3) * 3)
+  ].slice(0, Math.floor(Math.max(3, +rounds) / 3) * 3),
+  7: rounds => Array(Math.floor(Math.max(7, +rounds) / 7)).fill([
+    [0, 1, 2, 4], [1, 2, 3, 5], [2, 3, 4, 6], [3, 4, 5, 0], [4, 5, 6, 1], [5, 6, 0, 2], [6, 0, 1, 3],
+  ]).flat(),
+  8: rounds => [
+    [0, 1, 2, 3], [4, 5, 6, 7], [0, 2, 4, 6], [1, 3, 5, 7], [0, 1, 5, 6], [2, 3, 4, 7],
+    [0, 4, 1, 5], [2, 6, 3, 7], [0, 3, 4, 7], [1, 2, 5, 6], [0, 6, 1, 7], [2, 4, 3, 5],
+    [0, 1, 3, 4], [2, 5, 6, 7], [0, 5, 2, 7], [1, 4, 3, 6], [0, 2, 5, 7], [1, 3, 4, 6],
+    [0, 4, 2, 5], [1, 6, 3, 7], [0, 3, 1, 6], [2, 4, 5, 7], [0, 7, 1, 4], [2, 5, 3, 6]
+  ].slice(0, Math.floor(Math.max(6, +rounds) / 6) * 6),
 };
 
 const appConfig = {
@@ -65,7 +74,7 @@ const appConfig = {
       },
       allRoundConfigurations: allRoundConfigurations,
       playerCount: 6,
-      playerData: Array(6).fill(null).map((_, i) => ({
+      playerData: Array(8).fill(null).map((_, i) => ({
         id: i,
         name: `Player ${String.fromCharCode(65 + i)}`,
         totalPoints: 0,
@@ -74,7 +83,7 @@ const appConfig = {
       totalRounds: 15,
       racesPerRound: 4,
       enteredScores: {},
-      currentTrack: this.getRandomTrack(),
+      currentTrack: this.getRandomTrack(2 * this.racesPerRound),
       scoreHistory: [],
       resultsVisible: false,
       doneConfiguring: false
@@ -92,6 +101,10 @@ const appConfig = {
           return [5, 10, 15];
         case 6:
           return [3, 6, 9, 12, 15];
+        case 7:
+          return [7, 14];
+        case 8:
+          return [6, 12, 18, 24];
       }
     },
     activeRoundConfiguration() {
@@ -116,7 +129,7 @@ const appConfig = {
       return null;
     },
     rankedPlayers() {
-      return [...this.playerData].map(player => ({
+      return [...this.playerData].slice(0, this.playerCount).map(player => ({
         ...player,
         averagePoints: player.racesPlayed === 0 ? 0
           : (player.totalPoints / player.racesPlayed)
@@ -132,7 +145,7 @@ const appConfig = {
     }
   },
   methods: {
-    getRandomTrack(cooldown = 4) {
+    getRandomTrack(cooldown = 8) {
       const tracksToIgnore = lastSelectedTracks.slice(-cooldown);
 
       const eligibleTracks = allTracks.filter(track => !tracksToIgnore.includes(track.name));
@@ -142,7 +155,7 @@ const appConfig = {
 
       lastSelectedTracks.push(selectedTrack.name);
 
-      if (lastSelectedTracks.length > 12) {
+      if (lastSelectedTracks.length > cooldown) {
         lastSelectedTracks.shift();
       }
 
@@ -159,6 +172,7 @@ const appConfig = {
         }
       }
       this.playerCount = count;
+      this.totalRounds = this.possibleRoundCount.at(0);
     },
     setDefaultNameIfEmpty(index) {
       if (this.playerData[index] && !this.playerData[index].name.trim()) {
