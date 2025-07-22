@@ -93,7 +93,7 @@ const appConfig = {
       totalRounds: 15,
       racesPerRound: 4,
       enteredScores: {},
-      currentTrack: this.getRandomTrack(2 * this.racesPerRound),
+      currentTrack: this.getRandomTrack(allTracks.length - 4),
       scoreHistory: [],
       resultsVisible: false,
       doneConfiguring: false
@@ -155,7 +155,7 @@ const appConfig = {
     }
   },
   methods: {
-    getRandomTrack(cooldown = 8) {
+    getRandomTrack() {
       const tracksToIgnore = lastSelectedTracks.slice(-cooldown);
 
       const eligibleTracks = allTracks.filter(track => !tracksToIgnore.includes(track.name));

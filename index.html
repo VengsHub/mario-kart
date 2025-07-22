@@ -14,7 +14,7 @@
 <div id="app" class="container">
   <main class="content-area">
     <section id="left-column">
-      <div v-if="doneConfiguring" class="map-container" @click="currentTrack = getRandomTrack(2 * racesPerRound)">
+      <div v-if="doneConfiguring" class="map-container" @click="currentTrack = getRandomTrack(allTracks.length - 4)">
         <div class="map-marker" :style="{left: currentTrack.left, top: currentTrack.top}"></div>
         <img src="world-map-named.png" alt="world map" width="400">
         <span class="track-name">{{currentTrack.name}}</span>
